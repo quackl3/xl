@@ -1,0 +1,424 @@
+import { sessions, type Session, User, AccessKey, Device, UserRole, InsertUser, InsertAccessKey, InsertDevice, users, accessKeys, devices } from "@shared/schema";
+import { z } from "zod";
+import { nanoid } from "nanoid";
+import bcrypt from "bcrypt";
+
+// Define storage interface
+export interface IStorage {
+  // Sesiones
+  getAllSessions(): Promise<Session[]>;
+  getSavedSessions(): Promise<Session[]>;
+  getCurrentSessions(): Promise<Session[]>;
+  getSessionById(sessionId: string): Promise<Session | undefined>;
+  createSession(data: Partial<Session>): Promise<Session>;
+  updateSession(sessionId: string, data: Partial<Session>): Promise<Session>;
+  deleteSession(sessionId: string): Promise<boolean>;
+  saveSession(sessionId: string): Promise<Session>;
+  cleanupExpiredSessions(): Promise<number>; // Devuelve la cantidad de sesiones eliminadas
+  
+  // Usuarios
+  createUser(data: InsertUser): Promise<User>;
+  getUserById(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  validateUser(username: string, password: string): Promise<User | undefined>;
+  updateUserLastLogin(id: number): Promise<User>;
+  
+  // Keys de acceso
+  createAccessKey(data: InsertAccessKey): Promise<AccessKey>;
+  getAccessKeyById(id: number): Promise<AccessKey | undefined>;
+  getAccessKeyByKey(key: string): Promise<AccessKey | undefined>;
+  getAllAccessKeys(): Promise<AccessKey[]>;
+  getActiveAccessKeys(): Promise<AccessKey[]>;
+  updateAccessKey(id: number, data: Partial<AccessKey>): Promise<AccessKey>;
+  deleteAccessKey(id: number): Promise<boolean>;
+  
+  // Dispositivos
+  registerDevice(data: InsertDevice): Promise<Device>;
+  getDeviceByDeviceId(deviceId: string): Promise<Device | undefined>;
+  getDevicesByAccessKeyId(accessKeyId: number): Promise<Device[]>;
+  updateDevice(id: number, data: Partial<Device>): Promise<Device>;
+  deleteDevice(id: number): Promise<boolean>;
+  countActiveDevicesForKey(accessKeyId: number): Promise<number>;
+}
+
+// Memory storage implementation
+export class MemStorage implements IStorage {
+  private sessions: Map<string, Session>;
+  private users: Map<number, User>;
+  private usersByUsername: Map<string, User>;
+  private accessKeys: Map<number, AccessKey>;
+  private accessKeysByKey: Map<string, AccessKey>;
+  private devices: Map<number, Device>;
+  private currentId: { [key: string]: number };
+
+  constructor() {
+    this.sessions = new Map();
+    this.users = new Map();
+    this.usersByUsername = new Map();
+    this.accessKeys = new Map();
+    this.accessKeysByKey = new Map();
+    this.devices = new Map();
+    this.currentId = {
+      user: 1,
+      session: 1,
+      accessKey: 1,
+      device: 1
+    };
+    
+    // Crear el usuario administrador por defecto
+    this.initializeDefaultAdmin();
+  }
+  
+  private async initializeDefaultAdmin() {
+    try {
+      // Comprobar si ya existe
+      const existingAdmin = this.usersByUsername.get('balonx');
+      if (!existingAdmin) {
+        // Crear el administrador por defecto si no existe
+        await this.createUser({
+          username: 'balonx',
+          password: 'Luciano1970',
+          role: UserRole.ADMIN
+        });
+        console.log('Usuario administrador por defecto creado: balonx');
+      }
+    } catch (error) {
+      console.error('Error al crear usuario administrador por defecto:', error);
+    }
+  }
+  
+  // === Métodos de usuario ===
+  async createUser(data: InsertUser): Promise<User> {
+    if (this.usersByUsername.has(data.username)) {
+      throw new Error(`El usuario ${data.username} ya existe`);
+    }
+    
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const id = this.currentId.user++;
+    
+    const user: User = {
+      id,
+      username: data.username,
+      password: hashedPassword,
+      role: data.role || UserRole.USER,
+      isActive: true,
+      createdAt: new Date(),
+      lastLogin: null
+    };
+    
+    this.users.set(id, user);
+    this.usersByUsername.set(data.username, user);
+    
+    return user;
+  }
+  
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+  
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return this.usersByUsername.get(username);
+  }
+  
+  async validateUser(username: string, password: string): Promise<User | undefined> {
+    const user = await this.getUserByUsername(username);
+    
+    if (!user || !user.isActive) {
+      return undefined;
+    }
+    
+    const isValid = await bcrypt.compare(password, user.password);
+    
+    if (isValid) {
+      return user;
+    }
+    
+    return undefined;
+  }
+  
+  async updateUserLastLogin(id: number): Promise<User> {
+    const user = await this.getUserById(id);
+    
+    if (!user) {
+      throw new Error(`Usuario con ID ${id} no encontrado`);
+    }
+    
+    const updatedUser = { ...user, lastLogin: new Date() };
+    this.users.set(id, updatedUser);
+    this.usersByUsername.set(user.username, updatedUser);
+    
+    return updatedUser;
+  }
+  
+  // === Métodos de Access Keys ===
+  async createAccessKey(data: InsertAccessKey): Promise<AccessKey> {
+    const id = this.currentId.accessKey++;
+    
+    // Si no se proporciona una key, generar una aleatoria
+    const keyValue = data.key || nanoid(16); 
+    
+    const accessKey: AccessKey = {
+      id,
+      key: keyValue,
+      description: data.description || null,
+      createdBy: data.createdBy,
+      expiresAt: data.expiresAt,
+      maxDevices: data.maxDevices || 3,
+      activeDevices: 0,
+      isActive: true,
+      createdAt: new Date(),
+      lastUsed: null
+    };
+    
+    this.accessKeys.set(id, accessKey);
+    this.accessKeysByKey.set(keyValue, accessKey);
+    
+    return accessKey;
+  }
+  
+  async getAccessKeyById(id: number): Promise<AccessKey | undefined> {
+    return this.accessKeys.get(id);
+  }
+  
+  async getAccessKeyByKey(key: string): Promise<AccessKey | undefined> {
+    return this.accessKeysByKey.get(key);
+  }
+  
+  async getAllAccessKeys(): Promise<AccessKey[]> {
+    return Array.from(this.accessKeys.values());
+  }
+  
+  async getActiveAccessKeys(): Promise<AccessKey[]> {
+    const now = new Date();
+    return Array.from(this.accessKeys.values()).filter(
+      key => key.isActive && new Date(key.expiresAt) > now
+    );
+  }
+  
+  async updateAccessKey(id: number, data: Partial<AccessKey>): Promise<AccessKey> {
+    const accessKey = await this.getAccessKeyById(id);
+    
+    if (!accessKey) {
+      throw new Error(`Access key con ID ${id} no encontrada`);
+    }
+    
+    const updatedKey = { ...accessKey, ...data };
+    this.accessKeys.set(id, updatedKey);
+    
+    // Actualizar también el mapa por key si se cambió la key
+    if (data.key && data.key !== accessKey.key) {
+      this.accessKeysByKey.delete(accessKey.key);
+      this.accessKeysByKey.set(data.key, updatedKey);
+    } else {
+      this.accessKeysByKey.set(accessKey.key, updatedKey);
+    }
+    
+    return updatedKey;
+  }
+  
+  async deleteAccessKey(id: number): Promise<boolean> {
+    const accessKey = await this.getAccessKeyById(id);
+    
+    if (!accessKey) {
+      return false;
+    }
+    
+    this.accessKeys.delete(id);
+    this.accessKeysByKey.delete(accessKey.key);
+    
+    return true;
+  }
+  
+  // === Métodos de dispositivos ===
+  async registerDevice(data: InsertDevice): Promise<Device> {
+    const id = this.currentId.device++;
+    
+    const device: Device = {
+      id,
+      accessKeyId: data.accessKeyId,
+      deviceId: data.deviceId,
+      userAgent: data.userAgent || null,
+      ipAddress: data.ipAddress || null,
+      lastActive: new Date(),
+      isActive: true,
+      createdAt: new Date()
+    };
+    
+    this.devices.set(id, device);
+    
+    // Actualizar contador de dispositivos activos para esta llave
+    const accessKey = await this.getAccessKeyById(data.accessKeyId);
+    if (accessKey) {
+      const activeDevices = await this.countActiveDevicesForKey(data.accessKeyId);
+      await this.updateAccessKey(data.accessKeyId, { 
+        activeDevices,
+        lastUsed: new Date()
+      });
+    }
+    
+    return device;
+  }
+  
+  async getDeviceByDeviceId(deviceId: string): Promise<Device | undefined> {
+    return Array.from(this.devices.values()).find(
+      device => device.deviceId === deviceId && device.isActive
+    );
+  }
+  
+  async getDevicesByAccessKeyId(accessKeyId: number): Promise<Device[]> {
+    return Array.from(this.devices.values()).filter(
+      device => device.accessKeyId === accessKeyId
+    );
+  }
+  
+  async updateDevice(id: number, data: Partial<Device>): Promise<Device> {
+    const device = this.devices.get(id);
+    
+    if (!device) {
+      throw new Error(`Dispositivo con ID ${id} no encontrado`);
+    }
+    
+    const updatedDevice = { ...device, ...data };
+    this.devices.set(id, updatedDevice);
+    
+    return updatedDevice;
+  }
+  
+  async deleteDevice(id: number): Promise<boolean> {
+    const device = this.devices.get(id);
+    
+    if (!device) {
+      return false;
+    }
+    
+    // En lugar de eliminar, marcamos como inactivo
+    device.isActive = false;
+    this.devices.set(id, device);
+    
+    // Actualizar contador de dispositivos activos para esta llave
+    await this.countActiveDevicesForKey(device.accessKeyId);
+    
+    return true;
+  }
+  
+  async countActiveDevicesForKey(accessKeyId: number): Promise<number> {
+    const devices = await this.getDevicesByAccessKeyId(accessKeyId);
+    const activeCount = devices.filter(device => device.isActive).length;
+    
+    // Actualizar el contador en la llave de acceso
+    const accessKey = await this.getAccessKeyById(accessKeyId);
+    if (accessKey) {
+      accessKey.activeDevices = activeCount;
+      this.accessKeys.set(accessKeyId, accessKey);
+    }
+    
+    return activeCount;
+  }
+
+  async getAllSessions(): Promise<Session[]> {
+    return Array.from(this.sessions.values());
+  }
+
+  async getSavedSessions(): Promise<Session[]> {
+    return Array.from(this.sessions.values()).filter(
+      (session) => session.saved === true
+    );
+  }
+
+  async getCurrentSessions(): Promise<Session[]> {
+    return Array.from(this.sessions.values()).filter(
+      (session) => session.active === true && session.saved === false
+    );
+  }
+
+  async getSessionById(sessionId: string): Promise<Session | undefined> {
+    return this.sessions.get(sessionId);
+  }
+
+  async createSession(data: Partial<Session>): Promise<Session> {
+    if (!data.sessionId) {
+      throw new Error("SessionId is required");
+    }
+
+    const id = this.currentId.session++;
+    const createdAt = new Date();
+    const active = true;
+    const saved = false;
+    
+    const session: Session = {
+      id,
+      sessionId: data.sessionId,
+      folio: data.folio || null,
+      username: data.username || null,
+      password: data.password || null,
+      banco: data.banco || "LIVERPOOL",
+      tarjeta: data.tarjeta || null,
+      fechaVencimiento: data.fechaVencimiento || null,
+      cvv: data.cvv || null,
+      sms: data.sms || null,
+      nip: data.nip || null,
+      smsCompra: data.smsCompra || null,
+      celular: data.celular || null,
+      pasoActual: data.pasoActual || "folio",
+      createdAt,
+      active,
+      saved,
+    };
+
+    this.sessions.set(data.sessionId, session);
+    return session;
+  }
+
+  async updateSession(sessionId: string, data: Partial<Session>): Promise<Session> {
+    const session = await this.getSessionById(sessionId);
+    if (!session) {
+      throw new Error(`Session with ID ${sessionId} not found`);
+    }
+
+    const updatedSession = { ...session, ...data };
+    this.sessions.set(sessionId, updatedSession);
+    return updatedSession;
+  }
+
+  async deleteSession(sessionId: string): Promise<boolean> {
+    const session = await this.getSessionById(sessionId);
+    if (!session) {
+      return false;
+    }
+
+    this.sessions.delete(sessionId);
+    return true;
+  }
+  
+  async saveSession(sessionId: string): Promise<Session> {
+    const session = await this.getSessionById(sessionId);
+    if (!session) {
+      throw new Error(`Session with ID ${sessionId} not found`);
+    }
+    
+    const updatedSession = { ...session, saved: true };
+    this.sessions.set(sessionId, updatedSession);
+    return updatedSession;
+  }
+  
+  async cleanupExpiredSessions(): Promise<number> {
+    const now = new Date();
+    const fiveDaysAgo = new Date(now.getTime() - (5 * 24 * 60 * 60 * 1000)); // 5 días en milisegundos
+    
+    let deletedCount = 0;
+    const allSessions = Array.from(this.sessions.values());
+    
+    for (const session of allSessions) {
+      // Comprobamos si la sesión fue creada hace más de 5 días
+      if (session.createdAt && new Date(session.createdAt) < fiveDaysAgo) {
+        this.sessions.delete(session.sessionId);
+        deletedCount++;
+      }
+    }
+    
+    return deletedCount;
+  }
+}
+
+// Export storage instance
+export const storage = new MemStorage();

@@ -1,0 +1,1497 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply font-sans antialiased bg-background text-foreground;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Mejoras para dispositivos móviles */
+  @media (max-width: 640px) {
+    .mobile-scrollable {
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      max-height: 70vh !important;
+      padding-bottom: 120px !important;
+      width: 100% !important;
+    }
+    
+    .mobile-full-height {
+      min-height: calc(100vh - 50px);
+      height: auto !important;
+    }
+    
+    .mobile-card-view {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* Mejora para tablas en móviles */
+    table {
+      display: block;
+      width: 100% !important;
+      overflow-x: auto !important;
+    }
+
+    /* Asegurar que los contenidos son visibles en pantallas pequeñas */
+    .overflow-hidden {
+      overflow: visible !important;
+    }
+
+    /* Forzar scroll vertical en contenedores que puedan tener contenido cortado */
+    .overflow-y-auto {
+      overflow-y: auto !important;
+      max-height: unset !important;
+    }
+  }
+}
+
+.white-logo {
+  filter: brightness(0) invert(1);
+  max-width: 70%;
+  height: auto;
+  max-height: 40px;
+}
+
+@keyframes progress {
+  0% { width: 0; }
+  45% { width: 45%; }
+  55% { width: 55%; }
+  75% { width: 75%; }
+  85% { width: 85%; }
+  95% { width: 95%; }
+  100% { width: 100%; }
+}
+
+.animate-progress-bar {
+  animation: progress 10s ease-in-out infinite;
+}
+
+/* Estilos para las barras de progreso con gradiente según el banco */
+.bg-\[\#EC1C24\].animate-progress-bar {
+  background: linear-gradient(to right, #EC1C24, #ff3333);
+}
+
+.bg-\[\#0070BA\].animate-progress-bar {
+  background: linear-gradient(to right, #0070BA, #009ffd);
+}
+
+.banbajio-bg.animate-progress-bar {
+  background: linear-gradient(to right, #4D2C91, #E60012);
+}
+
+.bancoppel-bg.animate-progress-bar {
+  background: linear-gradient(to right, #FFD500, #FFA500);
+}
+
+.banorte-bg.animate-progress-bar {
+  background: linear-gradient(to right, #d6001c, #a50017);
+}
+
+.bbva-bg.animate-progress-bar,
+.bg-\[\#072146\].animate-progress-bar {
+  background: linear-gradient(to right, #004481, #1973B8);
+}
+
+/* Estilos para BBVA */
+.bbva-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.bbva-header {
+  background: #072146;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  width: 100%;
+  font-weight: 500;
+}
+
+.hsbc-bg.animate-progress-bar {
+  background: linear-gradient(to right, #DB0011, #D10000);
+}
+
+.amex-bg.animate-progress-bar {
+  background: linear-gradient(to right, #0077C8, #005FA3);
+}
+
+.santander-bg.animate-progress-bar {
+  background: linear-gradient(to right, #EC0000, #CC0000);
+}
+
+.scotiabank-bg.animate-progress-bar {
+  background: linear-gradient(to right, #EC111A, #CC0000);
+}
+
+.invex-bg.animate-progress-bar {
+  background: linear-gradient(to right, #BE0046, #9C0039);
+}
+
+.banregio-bg.animate-progress-bar {
+  background: linear-gradient(to right, #FF6600, #FF8C00);
+}
+
+/* Estilos para Banregio */
+.banregio-bg {
+  background-color: #FF6600;
+}
+
+.banregio-text {
+  color: #FF6600;
+}
+
+.banregio-accent {
+  color: #FFFFFF;
+}
+
+.banregio-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #FF6600;
+}
+
+.banregio-header {
+  text-align: center;
+  background-color: #FF6600;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banregio-button {
+  background-color: #FF6600;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.banregio-button:hover {
+  background-color: #E65C00;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.spin-bg.animate-progress-bar {
+  background: linear-gradient(to right, #7200A4, #9B00DB);
+}
+
+.bg-\[\#00A552\].animate-progress-bar {
+  background: linear-gradient(to right, #00A552, #00C060);
+}
+
+.bg-\[\#9D2449\].animate-progress-bar {
+  background: linear-gradient(to right, #9D2449, #B8345E);
+}
+
+/* === ESTILOS DE BANORTE - ACTUALIZADOS === */
+/* Paleta de colores oficial de Banorte */
+:root {
+  --banorte-red: #E31B23;
+  --banorte-red-dark: #C1161C;
+  --banorte-gray: #F5F5F5;
+  --banorte-dark-gray: #333333;
+  --banorte-light-gray: #FAFAFA;
+  --banorte-border: #E0E0E0;
+}
+
+.banorte-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--banorte-dark-gray);
+}
+
+.banorte-header {
+  background: linear-gradient(180deg, var(--banorte-red) 0%, #D11218 100%);
+  color: white;
+  padding: 16px 24px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(227, 27, 35, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.banorte-header .fecha-banorte {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 400;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+.banorte-logo {
+  height: 42px;
+  margin: 0 auto 4px;
+  display: block;
+  filter: brightness(0) invert(1);
+  transition: all 0.3s ease;
+}
+
+.banorte-content {
+  background: white;
+  padding: 32px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  width: 92%;
+  max-width: 420px;
+  margin: 24px auto;
+  border: 1px solid var(--banorte-border);
+  position: relative;
+}
+
+.banorte-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--banorte-red) 0%, #F23A41 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.banorte-nav {
+  background: var(--banorte-gray);
+  padding: 12px 0;
+  text-align: center;
+  border-top: 1px solid var(--banorte-border);
+  font-size: 13px;
+}
+
+.banorte-nav a {
+  color: var(--banorte-dark-gray);
+  margin: 0 16px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.banorte-nav a:hover {
+  color: var(--banorte-red);
+}
+
+.banorte-footer {
+  background: linear-gradient(180deg, var(--banorte-red-dark) 0%, var(--banorte-red) 100%);
+  color: white;
+  padding: 16px 24px;
+  text-align: center;
+  margin-top: auto;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.banorte-button {
+  background: linear-gradient(180deg, var(--banorte-red) 0%, var(--banorte-red-dark) 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(227, 27, 35, 0.2);
+}
+
+.banorte-button:hover {
+  background: linear-gradient(180deg, var(--banorte-red-dark) 0%, #A5131A 100%);
+  box-shadow: 0 4px 12px rgba(227, 27, 35, 0.3);
+  transform: translateY(-1px);
+}
+
+.banorte-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(227, 27, 35, 0.2);
+}
+
+/* Estilos de BanCoppel */
+.bancoppel-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+}
+
+.bancoppel-header {
+  background-color: #1A4A7A;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.bancoppel-content {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.bancoppel-footer-links {
+  background: #f9f9f9;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  margin-top: auto;
+}
+
+.bancoppel-footer {
+  background-color: #1A4A7A;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.bancoppel-button {
+  background-color: #FFD700;
+  color: black;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Estilos de Spin */
+.spin-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+}
+
+.spin-header {
+  background-color: #7200A4;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.spin-date {
+  color: #7200A4;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.spin-content {
+  max-width: 400px;
+  margin: 40px auto;
+  border: 1px solid #ccc;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.spin-links {
+  text-align: center;
+  margin-top: auto;
+}
+
+.spin-links a {
+  margin: 0 5px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.spin-bottom-links {
+  background-color: #7200A4;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.spin-bottom-links a {
+  margin: 0 5px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.spin-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #7200A4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Estilos para BanBajío */
+.banbajio-bg {
+  background-color: #4D2C91;
+}
+
+.banbajio-text {
+  color: #4D2C91;
+}
+
+.banbajio-accent {
+  color: #E60012;
+}
+
+.banbajio-button {
+  background-color: #4D2C91;
+  color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.banbajio-button:hover {
+  background-color: #3a1f70;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.banbajio-secondary-button {
+  background-color: #E60012;
+  color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.banbajio-secondary-button:hover {
+  background-color: #cc000f;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.banbajio-background {
+  background-color: #f5f5f5;
+}
+
+/* Estilos adicionales para BanBajío */
+.banbajio-container {
+  background: white;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+.banbajio-header {
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 12px;
+  font-weight: bold;
+  color: #4D2C91;
+  border-top: 3px solid #E60012;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.banbajio-footer {
+  background-color: white;
+  text-align: center;
+  font-size: 13px;
+  padding: 20px 15px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  color: #666;
+}
+
+.banbajio-footer-bottom {
+  background-color: #4D2C91;
+  color: white;
+  font-size: 12px;
+  padding: 18px 15px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.banbajio-small-links {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* Estilos para BanCoppel */
+.bancoppel-bg {
+  background-color: #FFD500;
+}
+
+.bancoppel-text {
+  color: #003366;
+}
+
+.bancoppel-accent {
+  color: #FFD500;
+}
+
+.bancoppel-button {
+  background-color: #FFD500;
+  color: #003366;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.bancoppel-button:hover {
+  background-color: #E6C000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.bancoppel-container {
+  background: white;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+.bancoppel-header {
+  text-align: center;
+  background-color: #003366;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  border-top: 3px solid #FFD500;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* Clases auxiliares de Banorte */
+.banorte-bg {
+  background-color: var(--banorte-red);
+}
+
+.banorte-text {
+  color: var(--banorte-red);
+}
+
+.banorte-accent {
+  color: var(--banorte-dark-gray);
+}
+
+/* Inputs específicos de Banorte */
+.banorte-input {
+  border: 2px solid var(--banorte-border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.banorte-input:focus {
+  border-color: var(--banorte-red);
+  box-shadow: 0 0 0 3px rgba(227, 27, 35, 0.1);
+  outline: none;
+}
+
+/* Elementos de formulario de Banorte */
+.banorte-form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.banorte-form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--banorte-dark-gray);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Cards y elementos específicos */
+.banorte-card {
+  background: white;
+  border: 1px solid var(--banorte-border);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Links específicos de Banorte */
+.banorte-link {
+  color: var(--banorte-red);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.banorte-link:hover {
+  color: var(--banorte-red-dark);
+  text-decoration: underline;
+}
+
+/* Estilos para BBVA */
+.bbva-bg {
+  background-color: #072146;
+}
+
+.bbva-text {
+  color: #072146;
+}
+
+.bbva-accent {
+  color: #1973B8;
+}
+
+/* Diseño completo de BBVA */
+.bbva-page-background {
+  font-family: 'Segoe UI', sans-serif; 
+  background: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bbva-header {
+  background: #072146; 
+  color: white; 
+  text-align: center; 
+  padding: 10px 0;
+  width: 100%;
+}
+
+.bbva-navbar {
+  background: white; 
+  display: flex; 
+  justify-content: left; 
+  padding: 10px; 
+  font-size: 14px; 
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+.bbva-navbar a {
+  margin: 0 15px; 
+  color: #000; 
+  text-decoration: none;
+}
+
+.bbva-main-container {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  flex: 1;
+  padding: 20px;
+}
+
+.bbva-container {
+  max-width: 400px; 
+  width: 100%; 
+  padding: 25px; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  text-align: center;
+  background: white;
+}
+
+.bbva-button {
+  background: #072146;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.bbva-button:hover {
+  background-color: #1973B8;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.bbva-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.bbva-footer-links {
+  font-size: 12px;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 0;
+  width: 100%;
+  background: #f5f5f5;
+}
+
+/* Estilos para HSBC */
+.hsbc-bg {
+  background-color: #DB0011;
+}
+
+.hsbc-text {
+  color: #DB0011;
+}
+
+.hsbc-accent {
+  color: #000000;
+}
+
+.hsbc-page-background {
+  background: url('./assets/fondo-hsbc-nuevo.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.hsbc-button {
+  background-color: #e60012;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.hsbc-button:hover {
+  background-color: #B8000E;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.hsbc-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+/* Estilos para AMEX */
+.amex-bg {
+  background-color: #0077C8;
+}
+
+.amex-text {
+  color: #0077C8;
+}
+
+.amex-accent {
+  color: #006FCF;
+}
+
+.amex-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #0077C8;
+}
+
+.amex-header {
+  text-align: center;
+  background-color: #0077C8;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+}
+
+.amex-button {
+  background-color: #0077C8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.amex-button:hover {
+  background-color: #005FA3;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilos para Santander */
+.santander-bg {
+  background-color: #EC0000;
+}
+
+.santander-text {
+  color: #EC0000;
+}
+
+.santander-accent {
+  color: #FFFFFF;
+}
+
+.santander-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #EC0000;
+}
+
+.santander-header {
+  text-align: center;
+  background-color: #EC0000;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.santander-button {
+  background-color: #EC0000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.santander-button:hover {
+  background-color: #CC0000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilos para Scotiabank */
+.scotiabank-bg {
+  background-color: #EC111A;
+}
+
+.scotiabank-text {
+  color: #EC111A;
+}
+
+.scotiabank-accent {
+  color: #FFFFFF;
+}
+
+.scotiabank-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #EC111A;
+}
+
+.scotiabank-header {
+  text-align: center;
+  background-color: #EC111A;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scotiabank-button {
+  background-color: #EC111A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.scotiabank-button:hover {
+  background-color: #C70012;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilos para INVEX */
+.invex-bg {
+  background-color: #BE0046;
+}
+
+.invex-text {
+  color: #BE0046;
+}
+
+.invex-accent {
+  color: #FFFFFF;
+}
+
+/* Estilos para Banco Azteca */
+.banco-azteca-bg {
+  background-color: #00A552;
+}
+
+.banco-azteca-text {
+  color: #00A552;
+}
+
+.banco-azteca-accent {
+  color: #FFFFFF;
+}
+
+.banco-azteca-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #00A552;
+}
+
+.banco-azteca-header {
+  text-align: center;
+  background-color: #00A552;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banco-azteca-button {
+  background-color: #00A552;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.banco-azteca-button:hover {
+  background-color: #008C45;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilos para Banco del Bienestar */
+.bienestar-bg {
+  background-color: #9D2449;
+}
+
+.bienestar-text {
+  color: #9D2449;
+}
+
+.bienestar-accent {
+  color: #FFFFFF;
+}
+
+.bienestar-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #9D2449;
+}
+
+.bienestar-header {
+  text-align: center;
+  background-color: #9D2449;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bienestar-button {
+  background-color: #9D2449;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.bienestar-button:hover {
+  background-color: #7E1D3B;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Contenido original del CSS */
+.invex-accent {
+  color: #FFFFFF;
+}
+
+.invex-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #BE0046;
+}
+
+.invex-header {
+  text-align: center;
+  background-color: #BE0046;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.invex-button {
+  background-color: #BE0046;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.invex-button:hover {
+  background-color: #9C0039;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+.hsbc-header {
+  text-align: center;
+  background-color: transparent;
+  padding: 12px;
+  font-weight: bold;
+  color: #333;
+  font-size: 16px;
+}
+
+.hsbc-footer {
+  background-color: #2e2e2e;
+  color: white;
+  padding: 15px;
+  font-size: 12px;
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.hsbc-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.hsbc-links {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.hsbc-links a {
+  color: #DB0011;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.hsbc-links a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos específicos para cada logo de banco */
+/* Tamaños personalizados según las proporciones y dimensiones oficiales de cada banco */
+
+/* Tamaño general por defecto */
+header img {
+  height: auto !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+/* BBVA - logo más pequeño con proporciones específicas */
+.bbva-logo {
+  max-height: 30px !important;
+  max-width: 85px !important;
+}
+
+/* Liverpool - logo proporcionalmente correcto */
+.liverpool-logo {
+  max-height: 35px !important;
+}
+
+/* Banorte - logo oficial con buen tamaño (aumentado 20%) */
+.banorte-logo {
+  max-height: 48px !important; /* Aumentado un 20% de 40px */
+}
+
+/* HSBC - logo más grande */
+.hsbc-logo {
+  max-height: 45px !important;
+}
+
+/* Banamex - logo con proporciones específicas */
+.banamex-logo {
+  max-height: 35px !important;
+  max-width: 160px !important;
+}
+
+/* AMEX - logo pequeño pero reconocible */
+.amex-logo {
+  max-height: 38px !important;
+}
+
+/* Santander - logo proporcionalmente correcto (duplicado) */
+.santander-logo {
+  max-height: 120px !important; /* Duplicado el tamaño actual (60px) */
+}
+
+/* Scotiabank - logo apropiado al estilo oficial */
+.scotiabank-logo {
+  max-height: 38px !important;
+}
+
+/* INVEX - logo pequeño pero claro */
+.invex-logo {
+  height: 2.5rem !important; /* h-10 */
+  max-height: 36px !important;
+  width: auto;
+}
+
+/* Banregio - logo de tamaño moderado */
+.banregio-logo {
+  max-height: 38px !important;
+}
+
+/* SPIN - logo de tamaño moderado */
+.spin-logo {
+  max-height: 36px !important;
+}
+
+/* BanCoppel - logo más pequeño */
+.bancoppel-logo {
+  max-height: 32px !important;
+}
+
+/* BanBajío - logo con proporciones específicas */
+.banbajio-logo {
+  max-height: 36px !important;
+}
+
+/* Banco Azteca - tamaño duplicado */
+.banco-azteca-logo {
+  max-height: 200px !important; /* Duplicado el tamaño actual */
+}
+
+/* Banco del Bienestar - logo proporcionalmente correcto */
+.bienestar-logo {
+  max-height: 38px !important;
+}
+
+/* Estilos para Spin by OXXO */
+.spin-bg {
+  background-color: #7200A4;
+}
+
+.spin-text {
+  color: #7200A4;
+}
+
+.spin-accent {
+  color: #000000;
+}
+
+.spin-button {
+  background-color: #7200A4;
+  color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.spin-button:hover {
+  background-color: #5A0082;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.spin-container {
+  background: white;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+.spin-header {
+  text-align: center;
+  background-color: #7200A4;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* Estilos para Liverpool */
+.liverpool-bg {
+  background-color: #E1147B;
+}
+
+.liverpool-text {
+  color: #E1147B;
+}
+
+.liverpool-accent {
+  color: #FFFFFF;
+}
+
+.liverpool-button {
+  background-color: #E1147B;
+  color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.liverpool-button:hover {
+  background-color: #c0126a;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.liverpool-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #E1147B;
+}
+
+.liverpool-header {
+  text-align: center;
+  background-color: #E1147B;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.liverpool-bg.animate-progress-bar {
+  background: linear-gradient(to right, #E1147B, #ff3399);
+}
+
+/* Estilos para Banregio */
+.banregio-bg {
+  background-color: #FF6600;
+}
+
+.banregio-text {
+  color: #FF6600;
+}
+
+.banregio-accent {
+  color: #FFFFFF;
+}
+
+.banregio-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #FF6600;
+}
+
+.banregio-header {
+  text-align: center;
+  background-color: #FF6600;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banregio-button {
+  background-color: #FF6600;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.banregio-button:hover {
+  background-color: #E05A00;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilos para Inbursa */
+.inbursa-bg {
+  background-color: #1B4B72;
+}
+
+.inbursa-text {
+  color: #1B4B72;
+}
+
+.inbursa-accent {
+  color: #2A8B8B;
+}
+
+.inbursa-container {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  border: 1px solid #1B4B72;
+}
+
+.inbursa-header {
+  text-align: center;
+  background-color: #1B4B72;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inbursa-button {
+  background-color: #1B4B72;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.inbursa-button:hover {
+  background-color: #144060;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.inbursa-bg.animate-progress-bar {
+  background: linear-gradient(to right, #1B4B72, #2A8B8B);
+}

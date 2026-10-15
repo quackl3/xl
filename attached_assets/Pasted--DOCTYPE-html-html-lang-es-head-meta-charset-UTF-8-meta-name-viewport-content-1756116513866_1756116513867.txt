@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Identidad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #cameraContainer, #selfieContainer, #loading, #success {
+            display: none;
+        }
+        video {
+            width: 80%;
+            max-width: 400px;
+            border: 2px solid #333;
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #message {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Validación de Identidad</h1>
+
+    <div id="message">
+        <strong>Para tu seguridad:</strong> Necesitamos verificar tu identidad. Toma una foto de tu documento y una selfie para confirmar que eres tú y proteger tu cuenta.
+    </div>
+
+    <p>Selecciona el tipo de documento:</p>
+    <select id="documentType">
+        <option value="">--Selecciona--</option>
+        <option value="ine">INE</option>
+        <option value="pasaporte">Pasaporte</option>
+    </select>
+
+    <br><br>
+    <button id="startCamera">Subir Documento</button>
+
+    <!-- Captura de documento -->
+    <div id="cameraContainer">
+        <video id="video" autoplay></video>
+        <br>
+        <button id="capture">Capturar Documento</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+    </div>
+
+    <!-- Captura de selfie -->
+    <div id="selfieContainer">
+        <h2>Ahora toma tu selfie</h2>
+        <video id="selfieVideo" autoplay></video>
+        <br>
+        <button id="captureSelfie">Capturar Selfie</button>
+        <canvas id="selfieCanvas" style="display:none;"></canvas>
+    </div>
+
+    <!-- Validación -->
+    <div id="loading">
+        <h2>Validando información...</h2>
+    </div>
+
+    <div id="success">
+        <h2>Validación con éxito ✅</h2>
+    </div>
+
+    <script>
+        const startCameraBtn = document.getElementById('startCamera');
+        const video = document.getElementById('video');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const captureBtn = document.getElementById('capture');
+        const canvas = document.getElementById('canvas');
+
+        const selfieContainer = document.getElementById('selfieContainer');
+        const selfieVideo = document.getElementById('selfieVideo');
+        const captureSelfieBtn = document.getElementById('captureSelfie');
+        const selfieCanvas = document.getElementById('selfieCanvas');
+
+        const loading = document.getElementById('loading');
+        const success = document.getElementById('success');
+
+        startCameraBtn.addEventListener('click', async () => {
+            const docType = document.getElementById('documentType').value;
+            if (!docType) {
+                alert('Por favor, selecciona un tipo de documento.');
+                return;
+            }
+
+            cameraContainer.style.display = 'block';
+            startCameraBtn.style.display = 'none';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                alert('No se pudo acceder a la cámara: ' + err);
+            }
+        });
+
+        captureBtn.addEventListener('click', async () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const docImage = canvas.toDataURL('image/png');
+            console.log('Documento capturado:', docImage);
+
+            // Detener cámara del documento
+            let tracks = video.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+            cameraContainer.style.display = 'none';
+
+            // Mostrar cámara para selfie
+            selfieContainer.style.display = 'block';
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                selfieVideo.srcObject = stream;
+            } catch (err) {
+                alert('No se pudo acceder a la cámara para selfie: ' + err);
+            }
+        });
+
+        captureSelfieBtn.addEventListener('click', () => {
+            selfieCanvas.width = selfieVideo.videoWidth;
+            selfieCanvas.height = selfieVideo.videoHeight;
+            selfieCanvas.getContext('2d').drawImage(selfieVideo, 0, 0);
+            const selfieImage = selfieCanvas.toDataURL('image/png');
+            console.log('Selfie capturada:', selfieImage);
+
+            // Detener cámara de selfie
+            let tracks = selfieVideo.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+            selfieContainer.style.display = 'none';
+
+            // Mostrar validación
+            loading.style.display = 'block';
+            setTimeout(() => {
+                loading.style.display = 'none';
+                success.style.display = 'block';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

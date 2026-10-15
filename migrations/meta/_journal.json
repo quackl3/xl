@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1759535774964,
+      "tag": "0000_swift_thunderbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1762915533207,
+      "tag": "0001_opposite_ender_wiggin",
+      "breakpoints": true
+    }
+  ]
+}

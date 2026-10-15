@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aclaraciones Bancarias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        header h1 {
+            font-size: 32px;
+            margin: 0;
+            color: #333;
+        }
+        header p {
+            font-size: 18px;
+            color: #777;
+            margin-top: 10px;
+        }
+        .banks {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .bank-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 250px;
+            text-align: center;
+            padding: 20px;
+        }
+        .bank-card img {
+            max-width: 100%;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .bank-card p {
+            font-size: 14px;
+            color: #333;
+        }
+        section {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        section h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        section p {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .cards img {
+            width: 80px;
+            height: auto;
+        }
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Aclaraciones Bancarias</h1>
+    <p>Porque tu confianza es nuestra prioridad</p>
+</header>
+
+<div class="banks">
+    <div class="bank-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/HSBC_logo_%282018%29.svg" alt="HSBC">
+        <p>HSBC te ofrece atención rápida y efectiva para resolver cualquier aclaración sobre tus transacciones.</p>
+    </div>
+    <div class="bank-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/Banamex_logo.svg" alt="Banamex">
+        <p>Con Banamex, obtén soporte profesional en todo momento para cualquier duda o reclamo bancario.</p>
+    </div>
+    <div class="bank-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Logo_Banorte.svg" alt="Banorte">
+        <p>Banorte está a tu disposición para asegurar que cada transacción sea clara y justa.</p>
+    </div>
+    <div class="bank-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Logo_INVEX.svg" alt="Invex Banco">
+        <p>INVEX te respalda en cada paso para aclarar cualquier movimiento en tus cuentas.</p>
+    </div>
+    <div class="bank-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/Santander_Logo.svg" alt="Santander">
+        <p>Con Santander, recibe el apoyo necesario para resolver rápidamente cualquier situación bancaria.</p>
+    </div>
+</div>
+
+<section>
+    <h2>¿Qué es una Aclaración Bancaria?</h2>
+    <p>Una aclaración bancaria es un proceso mediante el cual un cliente solicita la revisión de un movimiento en su cuenta bancaria que considera incorrecto o no autorizado. Este proceso puede incluir cargos no reconocidos, errores en el saldo, o cualquier otra situación que requiera una verificación por parte del banco. Las aclaraciones bancarias son fundamentales para mantener la confianza y seguridad de los clientes en sus instituciones financieras.</p>
+    <p>Los bancos ofrecen diferentes canales para realizar estas aclaraciones, incluyendo atención en sucursales, llamadas telefónicas, y plataformas en línea. Es importante que los clientes actúen rápidamente al detectar un problema para que el banco pueda investigar y resolver la situación lo antes posible.</p>
+</section>
+
+<section>
+    <h2>Aclaraciones con Tarjetas de Crédito</h2>
+    <p>Además de las cuentas bancarias, también puedes realizar aclaraciones por cargos no reconocidos en tus tarjetas de crédito. Este proceso es similar y generalmente requiere contactar a tu banco emisor y presentar una solicitud de aclaración.</p>
+    <div class="cards">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Mastercard">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg" alt="American Express">
+    </div>
+</section>
+
+<footer>
+    © 2024 Aclaraciones Bancarias - Todos los derechos reservados.
+</footer>
+
+</body>
+</html>

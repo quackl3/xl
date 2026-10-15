@@ -1,0 +1,762 @@
+
+const TelegramBot = require('node-telegram-bot-api');
+const axios = require('axios');
+const express = require('express');
+
+// === TOKENS proporcionados por ti ===
+const TELEGRAM_TOKEN = '7165007562:AAGSnBCz8SK5tH58SGcwyC7ZMxVXjtaz2lI';
+const ANKAREX_API_TOKEN = 'MSL3-YQPV-M4LP-ACF3-HNHG-ZMLR-QR7J-6S8U';
+const ANKAREX_API = 'https://rest.ankarex.ltd';
+
+// === ADMINISTRADOR ===
+const ADMIN_CHAT_ID = 6615027684; // @Balonxsistema
+
+// Inicializar bot
+const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+
+// Estado por usuario
+const estados = {};
+
+// Sistema de créditos (en memoria - en producción usar base de datos)
+const creditos = {};
+
+// Función para obtener créditos de un usuario
+function obtenerCreditos(chatId) {
+  return creditos[chatId] || 0;
+}
+
+// Función para agregar créditos (solo admin)
+function agregarCreditos(chatId, cantidad) {
+  if (!creditos[chatId]) creditos[chatId] = 0;
+  creditos[chatId] += cantidad;
+  return creditos[chatId];
+}
+
+// Función para usar créditos
+function usarCreditos(chatId, cantidad) {
+  if (!creditos[chatId]) creditos[chatId] = 0;
+  if (creditos[chatId] >= cantidad) {
+    creditos[chatId] -= cantidad;
+    return true;
+  }
+  return false;
+}
+
+// Comando para agregar créditos (solo admin)
+bot.onText(/\/agrega(\d+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const cantidadCreditos = parseInt(match[1]);
+
+  // Verificar si es el administrador
+  if (chatId !== ADMIN_CHAT_ID) {
+    return bot.sendMessage(chatId, '❌ No tienes permisos para usar este comando.');
+  }
+
+  if (!cantidadCreditos || cantidadCreditos <= 0) {
+    return bot.sendMessage(chatId, '❌ Cantidad de créditos inválida. Ejemplo: /agrega100');
+  }
+
+  // Guardar la cantidad y esperar el chat ID
+  estados[chatId] = {
+    esperando: 'chat_id_creditos',
+    cantidadCreditos: cantidadCreditos
+  };
+
+  bot.sendMessage(chatId, `💰 *Agregar ${cantidadCreditos} créditos*
+
+📝 Envía el *Chat ID* del usuario al que deseas agregar créditos:
+
+ℹ️ Tip: Los usuarios pueden obtener su Chat ID escribiendo /michatid`, {
+    parse_mode: 'Markdown'
+  });
+});
+
+// Comando para que los usuarios obtengan su Chat ID
+bot.onText(/\/michatid/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `🆔 Tu Chat ID es: \`${chatId}\`
+
+📋 Compártelo con el administrador para recibir créditos.`, {
+    parse_mode: 'Markdown'
+  });
+});
+
+// Comando para verificar créditos
+bot.onText(/\/creditos/, (msg) => {
+  const chatId = msg.chat.id;
+  const creditosUsuario = obtenerCreditos(chatId);
+  
+  bot.sendMessage(chatId, `💰 *Tus créditos:* ${creditosUsuario}
+
+💡 1 crédito = 1 mensaje SMS
+${creditosUsuario === 0 ? '\n⚠️ Necesitas créditos para enviar mensajes. Contacta al administrador.' : ''}`, {
+    parse_mode: 'Markdown'
+  });
+});
+
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  const creditosUsuario = obtenerCreditos(chatId);
+  estados[chatId] = {};
+  
+  bot.sendMessage(chatId, `
+🚀⚡️¡Bienvenido a *SMS Bullet Balonx*⚽️📩!⚡️🚀
+
+💰 *Créditos disponibles:* ${creditosUsuario}
+📣 Envío de hasta *250 SMS* por interacción.
+
+👉 Por favor, elige una opción para empezar: 👈
+`, {
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '📨 Enviar mensaje', callback_data: 'enviar_mensaje' }],
+        [{ text: '💰 Ver créditos', callback_data: 'ver_creditos' }],
+        [{ text: '🆔 Mi Chat ID', callback_data: 'mi_chat_id' }],
+        [{ text: '📞 Contactar', callback_data: 'contactar' }],
+        [{ text: 'ℹ️ Información', callback_data: 'info' }]
+      ]
+    }
+  });
+});
+
+// Manejar callbacks de botones
+bot.on('callback_query', async (callbackQuery) => {
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+  const data = callbackQuery.data;
+
+  // Responder al callback para quitar el "loading"
+  bot.answerCallbackQuery(callbackQuery.id);
+
+  if (data === 'ver_creditos') {
+    const creditosUsuario = obtenerCreditos(chatId);
+    bot.sendMessage(chatId, `💰 *Tus créditos:* ${creditosUsuario}
+
+💡 1 crédito = 1 mensaje SMS
+${creditosUsuario === 0 ? '\n⚠️ Necesitas créditos para enviar mensajes. Contacta al administrador @Balonxsistema' : ''}`, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Volver al menú', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data === 'mi_chat_id') {
+    bot.sendMessage(chatId, `🆔 Tu Chat ID es: \`${chatId}\`
+
+📋 Compártelo con el administrador @Balonxsistema para recibir créditos.`, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Volver al menú', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data === 'enviar_mensaje') {
+    const creditosUsuario = obtenerCreditos(chatId);
+    
+    if (creditosUsuario === 0) {
+      bot.sendMessage(chatId, `❌ *Sin créditos*
+
+💰 Necesitas créditos para enviar mensajes.
+🆔 Tu Chat ID: \`${chatId}\`
+
+📞 Contacta al administrador @Balonxsistema para obtener créditos.`, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔙 Volver al menú', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+      return;
+    }
+
+    estados[chatId] = {};
+    bot.sendMessage(chatId, `💰 Créditos disponibles: *${creditosUsuario}*
+
+🔢 Ingresa tu *prefijo* (ejemplo: \`+52\`):`, { 
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🇲🇽 México (+52)', callback_data: 'prefijo_+52' }],
+          [{ text: '🇺🇸 USA (+1)', callback_data: 'prefijo_+1' }],
+          [{ text: '🇨🇴 Colombia (+57)', callback_data: 'prefijo_+57' }],
+          [{ text: '✏️ Escribir otro', callback_data: 'prefijo_manual' }]
+        ]
+      }
+    });
+    estados[chatId].esperando = 'prefijo';
+    return;
+  }
+
+  if (data === 'contactar') {
+    bot.sendMessage(chatId, '📞 Puedes contactar al dueño del bot en: @Balonxsistema', {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Volver al menú', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data === 'info') {
+    bot.sendMessage(chatId, `
+ℹ️ *Información del Bot*
+
+🤖 *SMS Bullet Balonx*
+📱 Envía hasta 250 SMS por sesión
+🌐 Compatible con múltiples países
+⚡️ Envío rápido y confiable
+💰 Sistema de créditos (1 crédito = 1 SMS)
+
+💡 *Cómo usar:*
+1. Obtén créditos del administrador @Balonxsistema
+2. Selecciona "Enviar mensaje"
+3. Elige tu prefijo de país
+4. Ingresa los números (separados por coma)
+5. Escribe tu mensaje
+6. ¡Envía!
+`, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Volver al menú', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data === 'menu_principal') {
+    const creditosUsuario = obtenerCreditos(chatId);
+    estados[chatId] = {};
+    bot.sendMessage(chatId, `
+🚀⚡️¡Bienvenido a *SMS Bullet Balonx*⚽️📩!⚡️🚀
+
+💰 *Créditos disponibles:* ${creditosUsuario}
+📣 Envío de hasta *250 SMS* por interacción.
+
+👉 Por favor, elige una opción para empezar: 👈
+`, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '📨 Enviar mensaje', callback_data: 'enviar_mensaje' }],
+          [{ text: '💰 Ver créditos', callback_data: 'ver_creditos' }],
+          [{ text: '🆔 Mi Chat ID', callback_data: 'mi_chat_id' }],
+          [{ text: '📞 Contactar', callback_data: 'contactar' }],
+          [{ text: 'ℹ️ Información', callback_data: 'info' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data.startsWith('prefijo_')) {
+    const prefijo = data.replace('prefijo_', '');
+    if (prefijo === 'manual') {
+      // Asegurar que el estado existe
+      if (!estados[chatId]) estados[chatId] = {};
+      estados[chatId].esperando = 'prefijo';
+      bot.sendMessage(chatId, '✏️ Escribe tu prefijo personalizado (ejemplo: `+52`):', { parse_mode: 'Markdown' });
+      return;
+    }
+    
+    // Asegurar que el estado existe antes de asignar propiedades
+    if (!estados[chatId]) estados[chatId] = {};
+    estados[chatId].prefijo = prefijo;
+    estados[chatId].esperando = 'numeros';
+    bot.sendMessage(chatId, `✅ Prefijo seleccionado: *${prefijo}*
+
+📱 Ingresa hasta *250 números* separados por coma (sin espacios):
+
+Ej: \`5512345678,5523456789\``, { 
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Cambiar prefijo', callback_data: 'enviar_mensaje' }],
+          [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+});
+
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const text = msg.text;
+
+  // Ignorar comandos para evitar interferencia
+  if (text && text.startsWith('/')) return;
+
+  const estado = estados[chatId];
+  if (!estado) return;
+
+  // MANEJO PARA AGREGAR CRÉDITOS (SOLO ADMIN)
+  if (estado.esperando === 'chat_id_creditos' && chatId === ADMIN_CHAT_ID) {
+    const targetChatId = parseInt(text);
+    if (isNaN(targetChatId)) {
+      return bot.sendMessage(chatId, '❌ Chat ID inválido. Debe ser un número.');
+    }
+
+    const creditosAgregados = agregarCreditos(targetChatId, estado.cantidadCreditos);
+    
+    bot.sendMessage(chatId, `✅ *Créditos agregados exitosamente*
+
+👤 Chat ID: ${targetChatId}
+💰 Créditos agregados: ${estado.cantidadCreditos}
+💰 Total de créditos: ${creditosAgregados}`, {
+      parse_mode: 'Markdown'
+    });
+
+    // Notificar al usuario que recibió créditos
+    try {
+      bot.sendMessage(targetChatId, `🎉 *¡Has recibido créditos!*
+
+💰 Créditos recibidos: ${estado.cantidadCreditos}
+💰 Total de créditos: ${creditosAgregados}
+
+🚀 Ya puedes usar el bot para enviar mensajes SMS.`, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '📨 Enviar mensaje', callback_data: 'enviar_mensaje' }],
+            [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+    } catch (error) {
+      bot.sendMessage(chatId, `⚠️ Créditos agregados pero no se pudo notificar al usuario. Puede que haya bloqueado el bot.`);
+    }
+
+    delete estados[chatId];
+    return;
+  }
+
+  // PREFIJO (solo para entrada manual)
+  if (estado.esperando === 'prefijo') {
+    if (!text.startsWith('+')) {
+      return bot.sendMessage(chatId, '❗️ Prefijo inválido. Asegúrate de incluir el símbolo `+` (ej: +52)', {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔙 Seleccionar prefijo', callback_data: 'enviar_mensaje' }]
+          ]
+        }
+      });
+    }
+    estado.prefijo = text;
+    estado.esperando = 'numeros';
+    bot.sendMessage(chatId, `✅ Prefijo configurado: *${text}*
+
+📱 Ingresa hasta *250 números* separados por coma (sin espacios):
+
+Ej: \`5512345678,5523456789\``, { 
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Cambiar prefijo', callback_data: 'enviar_mensaje' }],
+          [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // NÚMEROS
+  if (estado.esperando === 'numeros') {
+    const numeros = text.split(',').map(n => n.trim()).filter(n => /^\d{10}$/.test(n));
+    const creditosUsuario = obtenerCreditos(chatId);
+    
+    if (numeros.length === 0 || numeros.length > 250) {
+      return bot.sendMessage(chatId, `❌ Debes ingresar entre 1 y 250 números válidos de 10 dígitos, separados por coma.`, {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔙 Cambiar prefijo', callback_data: 'enviar_mensaje' }],
+            [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+    }
+
+    if (numeros.length > creditosUsuario) {
+      return bot.sendMessage(chatId, `❌ *Créditos insuficientes*
+
+📱 Números a enviar: ${numeros.length}
+💰 Créditos disponibles: ${creditosUsuario}
+❗️ Necesitas ${numeros.length - creditosUsuario} créditos más.
+
+📞 Contacta al administrador @Balonxsistema`, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔙 Cambiar números', callback_data: 'cambiar_numeros' }],
+            [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+    }
+
+    estado.numeros = numeros;
+    estado.esperando = 'mensaje';
+    bot.sendMessage(chatId, `✅ *${numeros.length} números* configurados correctamente
+💰 Costo: ${numeros.length} créditos
+
+✏️ Ingresa el *mensaje* que deseas enviar (máx. 160 caracteres):`, { 
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Cambiar números', callback_data: 'cambiar_numeros' }],
+          [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // MENSAJE
+  if (estado.esperando === 'mensaje') {
+    if (text.length > 160) {
+      return bot.sendMessage(chatId, `❗️ El mensaje tiene ${text.length} caracteres. Debe ser de máximo 160.`, {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔙 Cambiar números', callback_data: 'cambiar_numeros' }],
+            [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+    }
+
+    estado.mensaje = text;
+    estado.esperando = 'confirmacion';
+    const creditosUsuario = obtenerCreditos(chatId);
+
+    bot.sendMessage(chatId, `
+📋 *Resumen de envío:*
+
+📞 Prefijo: \`${estado.prefijo}\`
+📱 Números: *${estado.numeros.length}*
+📩 Mensaje: "${estado.mensaje}"
+💰 Costo: ${estado.numeros.length} créditos
+💰 Créditos actuales: ${creditosUsuario}
+💰 Créditos restantes: ${creditosUsuario - estado.numeros.length}
+
+¿Confirmas el envío?
+`, { 
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '✅ Confirmar envío', callback_data: 'confirmar_envio' },
+            { text: '❌ Cancelar', callback_data: 'menu_principal' }
+          ],
+          [{ text: '✏️ Editar mensaje', callback_data: 'editar_mensaje' }]
+        ]
+      }
+    });
+    return;
+  }
+});
+
+// Manejar callback de confirmación de envío
+bot.on('callback_query', async (callbackQuery) => {
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+  const data = callbackQuery.data;
+  
+  bot.answerCallbackQuery(callbackQuery.id);
+
+  if (data === 'confirmar_envio') {
+    const estado = estados[chatId];
+    if (!estado || !estado.mensaje) return;
+
+    const creditosNecesarios = estado.numeros.length;
+    const creditosUsuario = obtenerCreditos(chatId);
+
+    // Verificar créditos antes del envío
+    if (creditosUsuario < creditosNecesarios) {
+      return bot.sendMessage(chatId, `❌ *Créditos insuficientes*
+
+💰 Necesitas: ${creditosNecesarios} créditos
+💰 Tienes: ${creditosUsuario} créditos
+
+📞 Contacta al administrador @Balonxsistema`, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+          ]
+        }
+      });
+    }
+
+    bot.sendMessage(chatId, `✅ Enviando mensaje a *${estado.numeros.length} números*...
+💰 Descontando ${creditosNecesarios} créditos...
+
+📩 Mensaje: "${estado.mensaje}"`, { parse_mode: 'Markdown' });
+
+    // Crear lista de números con prefijo para envío bulk
+    const numerosCompletos = estado.numeros.map(numero => `${estado.prefijo}${numero}`);
+    const numerosString = numerosCompletos.join(',');
+    
+    let exitosos = 0;
+    let fallidos = 0;
+    let creditosDescontados = false;
+    
+    try {
+      console.log('Enviando a Ankarex API...');
+      console.log('URL:', ANKAREX_API);
+      console.log('Números:', numerosString);
+      console.log('Mensaje:', estado.mensaje);
+      
+      const response = await axios.post(ANKAREX_API, {
+        token: ANKAREX_API_TOKEN,
+        send: "bulk",
+        to: numerosString,
+        sender_id: "SMS",
+        message_content: estado.mensaje,
+        unicode: false
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'Ankarex-Rest-0.22'
+        },
+        timeout: 30000
+      });
+      
+      console.log('API Response Status:', response.status);
+      console.log('API Response Data:', response.data);
+      
+      if (response.status === 200 && response.data) {
+        // Ankarex responde con diferentes formatos exitosos:
+        // Formato 1: {"error": "false", "info": "CAMPAIGN_SENT", "id": 4}
+        // Formato 2: {"info": "SENT", "campaign_id": 562498}
+        const isSuccess = (
+          (response.data.error === "false") || 
+          (response.data.info === "SENT") || 
+          (response.data.info === "CAMPAIGN_SENT") ||
+          (response.data.campaign_id)
+        );
+        
+        if (isSuccess) {
+          exitosos = estado.numeros.length;
+          // Descontar créditos solo si el envío fue exitoso
+          usarCreditos(chatId, creditosNecesarios);
+          creditosDescontados = true;
+          const campaignId = response.data.id || response.data.campaign_id || 'N/A';
+          console.log(`✅ Campaña enviada exitosamente. ID: ${campaignId}`);
+        } else {
+          fallidos = estado.numeros.length;
+          console.log(`❌ Error en API: ${response.data.info || 'Error desconocido'}`);
+        }
+      } else {
+        fallidos = estado.numeros.length;
+        console.log(`⚠️ Respuesta no exitosa:`, response.data);
+      }
+    } catch (err) {
+      fallidos = estado.numeros.length;
+      console.error(`❌ Error al enviar:`, err.response?.data || err.message);
+      
+      // Log detallado del error para debugging
+      if (err.response) {
+        console.error(`Status: ${err.response.status}`);
+        console.error(`Headers:`, err.response.headers);
+        console.error(`Data:`, err.response.data);
+      } else {
+        console.error('Error de conexión:', err.message);
+      }
+    }
+
+    const creditosRestantes = obtenerCreditos(chatId);
+
+    bot.sendMessage(chatId, `📊 *Resumen de envío:*
+
+✅ Exitosos: ${exitosos}
+❌ Fallidos: ${fallidos}
+📱 Total: ${estado.numeros.length}
+💰 Créditos ${creditosDescontados ? 'descontados' : 'conservados'}: ${creditosDescontados ? creditosNecesarios : 0}
+💰 Créditos restantes: ${creditosRestantes}
+
+${exitosos > 0 ? '🎉 ¡Envío completado!' : '⚠️ Revisa la configuración de la API'}`, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '📨 Enviar otro mensaje', callback_data: 'enviar_mensaje' }],
+          [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    delete estados[chatId];
+    return;
+  }
+
+  if (data === 'editar_mensaje') {
+    const estado = estados[chatId];
+    if (!estado) return;
+    
+    estado.esperando = 'mensaje';
+    bot.sendMessage(chatId, '✏️ Ingresa el nuevo *mensaje* (máx. 160 caracteres):', {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Volver al resumen', callback_data: 'volver_resumen' }]
+        ]
+      }
+    });
+    return;
+  }
+
+  if (data === 'cambiar_numeros') {
+    const estado = estados[chatId];
+    if (!estado) return;
+    
+    estado.esperando = 'numeros';
+    const creditosUsuario = obtenerCreditos(chatId);
+    bot.sendMessage(chatId, `📱 Ingresa los nuevos números (hasta 250, separados por coma):
+💰 Créditos disponibles: ${creditosUsuario}
+
+Prefijo actual: *${estado.prefijo}*
+
+Ej: \`5512345678,5523456789\``, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Cambiar prefijo', callback_data: 'enviar_mensaje' }],
+          [{ text: '🏠 Menú principal', callback_data: 'menu_principal' }]
+        ]
+      }
+    });
+    return;
+  }
+});
+
+// HTTP server for Autoscale deployment
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(express.json());
+app.use(express.static('.'));
+
+// Servir la interfaz web
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/web.html');
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'Bot is running', 
+    timestamp: new Date().toISOString(),
+    name: 'SMS Bullet Balonx'
+  });
+});
+
+// API endpoint para enviar SMS desde la web
+app.post('/api/send-sms', async (req, res) => {
+  try {
+    const { prefix, phoneNumbers, message } = req.body;
+
+    // Validaciones
+    if (!prefix || !prefix.startsWith('+')) {
+      return res.status(400).json({ success: false, message: 'Prefijo inválido' });
+    }
+
+    if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+      return res.status(400).json({ success: false, message: 'Números de teléfono requeridos' });
+    }
+
+    if (phoneNumbers.length > 250) {
+      return res.status(400).json({ success: false, message: 'Máximo 250 números permitidos' });
+    }
+
+    if (!message || message.length > 160) {
+      return res.status(400).json({ success: false, message: 'Mensaje inválido (máx. 160 caracteres)' });
+    }
+
+    // Crear lista de números con prefijo
+    const numerosCompletos = phoneNumbers.map(numero => `${prefix}${numero}`);
+    const numerosString = numerosCompletos.join(',');
+    
+    console.log('🌐 Enviando SMS desde interfaz web...');
+    console.log('📱 Números:', numerosString);
+    console.log('💬 Mensaje:', message);
+    
+    // Enviar a la API de Ankarex
+    const response = await axios.post(ANKAREX_API, {
+      token: ANKAREX_API_TOKEN,
+      send: "bulk",
+      to: numerosString,
+      sender_id: "SMS",
+      message_content: message,
+      unicode: false
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': 'Ankarex-Rest-0.22'
+      },
+      timeout: 30000
+    });
+    
+    console.log('📡 API Response Status:', response.status);
+    console.log('📡 API Response Data:', response.data);
+    
+    if (response.status === 200 && response.data) {
+      const isSuccess = (
+        (response.data.error === "false") || 
+        (response.data.info === "SENT") || 
+        (response.data.info === "CAMPAIGN_SENT") ||
+        (response.data.campaign_id)
+      );
+      
+      if (isSuccess) {
+        const campaignId = response.data.id || response.data.campaign_id || 'N/A';
+        console.log(`✅ Campaña web enviada exitosamente. ID: ${campaignId}`);
+        
+        return res.json({ 
+          success: true, 
+          sent: phoneNumbers.length,
+          campaignId: campaignId,
+          message: 'SMS enviados exitosamente' 
+        });
+      } else {
+        console.log(`❌ Error en API web: ${response.data.info || 'Error desconocido'}`);
+        return res.status(400).json({ 
+          success: false, 
+          message: response.data.info || 'Error en el envío' 
+        });
+      }
+    } else {
+      console.log(`⚠️ Respuesta no exitosa web:`, response.data);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Error en la API de SMS' 
+      });
+    }
+  } catch (error) {
+    console.error(`❌ Error al enviar SMS web:`, error.response?.data || error.message);
+    
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error interno del servidor' 
+    });
+  }
+});
+
+// Start HTTP server
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 HTTP server listening on port ${PORT}`);
+  console.log(`🌍 Interfaz web disponible en: http://localhost:${PORT}`);
+  console.log('🤖 Bot SMS Bullet Balonx iniciado correctamente con sistema de créditos...');
+});

